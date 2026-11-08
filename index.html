@@ -8,7 +8,7 @@
 </head>
 <body class="bg-slate-100 text-slate-800 p-3 sm:p-6 font-sans">
 
-  <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
+  <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden relative">
     
     <!-- Header -->
     <div class="bg-red-800 text-white p-4 text-center">
@@ -30,19 +30,20 @@
         </div>
       </div>
 
-      <!-- Attending Staff -->
+      <!-- Attending Staff Details -->
       <div class="bg-amber-50/50 p-4 rounded-lg border border-amber-200/80">
-        <h2 class="text-xs font-bold text-amber-800 uppercase tracking-wider mb-3">Attending Staff Details</h2>
+        <div class="flex justify-between items-center mb-3">
+          <h2 class="text-xs font-bold text-amber-800 uppercase tracking-wider">Attending Staff Details</h2>
+          <button type="button" onclick="openTradeModal()" class="text-xs bg-amber-200 hover:bg-amber-300 text-amber-900 font-semibold px-2 py-0.5 rounded transition">
+            ⚙️ Manage Trades
+          </button>
+        </div>
+
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Trade</label>
-            <select id="trade" required class="w-full p-2 border rounded-md text-sm bg-white">
-              <option value="Welder">Welding</option>
-              <option value="Electrician">Electrical</option>
-              <option value="Plumber">Plumbing</option>
-              <option value="Carpenter">Carpentry</option>
-              <option value="Mason">Mason / Civil</option>
-              <option value="Mason">Fitter-Mechanic / Mechanical</option>
+            <select id="trade" required class="w-full p-2 border rounded-md text-sm bg-white font-medium">
+              <!-- Dynamically populated from JavaScript -->
             </select>
           </div>
           <div>
@@ -60,7 +61,7 @@
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div class="sm:col-span-3">
           <label class="block text-xs font-semibold text-slate-600 mb-1">Job Location / Block / Room</label>
-          <input type="text" id="location" required placeholder="e.g. Boys Hostel 2, Mess Area" class="w-full p-2 border rounded-md text-sm">
+          <input type="text" id="location" required placeholder="e.g. Boys Hostel 2, Mess Area / Room 104" class="w-full p-2 border rounded-md text-sm">
         </div>
         <div>
           <label class="block text-xs font-semibold text-slate-600 mb-1">Time In (Started)</label>
@@ -75,15 +76,15 @@
         </div>
       </div>
 
-      <!-- Work Info -->
+      <!-- Work Details -->
       <div class="space-y-3">
         <div>
           <label class="block text-xs font-semibold text-slate-600 mb-1">Problem Reported</label>
-          <input type="text" id="problem" required placeholder="e.g. Door hinge broken / Pipe leakage" class="w-full p-2 border rounded-md text-sm">
+          <input type="text" id="problem" required placeholder="e.g. Main gate hinge broken / Conveyor belt loose" class="w-full p-2 border rounded-md text-sm">
         </div>
         <div>
           <label class="block text-xs font-semibold text-slate-600 mb-1">Work Done / Action Taken</label>
-          <textarea id="workDone" rows="2" required placeholder="e.g. Re-welded hinge with reinforcement" class="w-full p-2 border rounded-md text-sm"></textarea>
+          <textarea id="workDone" rows="2" required placeholder="e.g. Re-welded hinge with flat / Machine alignment done" class="w-full p-2 border rounded-md text-sm"></textarea>
         </div>
       </div>
 
@@ -91,11 +92,11 @@
       <div class="border rounded-lg p-3 bg-slate-50">
         <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Job Done / Repaired Object Photo</label>
         <div class="flex items-center gap-3">
-          <label class="flex-1 flex flex-col items-center justify-center p-3 border-2 border-dashed border-slate-300 rounded-lg cursor-pointer bg-white hover:bg-slate-50">
+          <label class="flex-1 flex flex-col items-center justify-center p-3 border-2 border-dashed border-slate-300 rounded-lg cursor-pointer bg-white hover:bg-slate-50 transition">
             <span class="text-xs font-semibold text-slate-600">📷 Take Repaired Item Photo</span>
             <input type="file" id="workPhotoInput" accept="image/*" capture="environment" class="hidden">
           </label>
-          <div id="workPhotoPreview" class="w-16 h-16 rounded border bg-slate-200 flex items-center justify-center text-xs text-slate-400 overflow-hidden">No Pic</div>
+          <div id="workPhotoPreview" class="w-16 h-16 rounded border bg-slate-200 flex items-center justify-center text-xs text-slate-400 overflow-hidden font-medium">No Pic</div>
         </div>
       </div>
 
@@ -103,17 +104,17 @@
       <div class="border rounded-lg p-3 bg-slate-50">
         <div class="flex justify-between items-center mb-2">
           <label class="text-xs font-bold uppercase tracking-wider text-slate-700">Material Used</label>
-          <button type="button" onclick="addMaterialRow()" class="text-xs bg-slate-800 text-white px-2 py-1 rounded hover:bg-black">+ Add Item</button>
+          <button type="button" onclick="addMaterialRow()" class="text-xs bg-slate-800 text-white px-2.5 py-1 rounded hover:bg-black font-medium transition">+ Add Item</button>
         </div>
         <div id="materialList" class="space-y-2">
           <div class="flex gap-2 material-row">
-            <input type="text" placeholder="Item name / spec" class="w-2/3 p-1.5 border rounded text-xs mat-name">
+            <input type="text" placeholder="Item name / spec (e.g. MS Flat / 6013 Rod)" class="w-2/3 p-1.5 border rounded text-xs mat-name">
             <input type="text" placeholder="Qty (e.g. 2 pcs / 1 kg)" class="w-1/3 p-1.5 border rounded text-xs mat-qty">
           </div>
         </div>
       </div>
 
-      <!-- Complainant Section (Photo + Sign) -->
+      <!-- Complainant Section (Name, Code, Photo & Signature) -->
       <div class="bg-blue-50/50 p-4 rounded-lg border border-blue-200/80 space-y-4">
         <h2 class="text-xs font-bold text-blue-800 uppercase tracking-wider">Complainant Verification & Sign-off</h2>
         
@@ -132,39 +133,168 @@
         <div>
           <label class="block text-xs font-semibold text-slate-600 mb-1">Complainant Live Photo (During Sign-off)</label>
           <div class="flex items-center gap-3">
-            <label class="flex-1 flex flex-col items-center justify-center p-3 border-2 border-dashed border-blue-300 rounded-lg cursor-pointer bg-white hover:bg-blue-50/30">
+            <label class="flex-1 flex flex-col items-center justify-center p-3 border-2 border-dashed border-blue-300 rounded-lg cursor-pointer bg-white hover:bg-blue-50/30 transition">
               <span class="text-xs font-semibold text-blue-700">👤 Capture Complainant Photo</span>
               <input type="file" id="compPhotoInput" accept="image/*" capture="user" class="hidden">
             </label>
-            <div id="compPhotoPreview" class="w-16 h-16 rounded border bg-slate-200 flex items-center justify-center text-xs text-slate-400 overflow-hidden">No Pic</div>
+            <div id="compPhotoPreview" class="w-16 h-16 rounded border bg-slate-200 flex items-center justify-center text-xs text-slate-400 overflow-hidden font-medium">No Pic</div>
           </div>
         </div>
 
         <!-- Touch Signature Pad -->
         <div>
           <div class="flex justify-between items-center mb-1">
-            <label class="text-xs font-semibold text-slate-600">Complainant Signature</label>
+            <label class="text-xs font-semibold text-slate-600">Complainant Digital Signature</label>
             <button type="button" onclick="clearSignature()" class="text-xs text-red-600 hover:underline">Clear Sign</button>
           </div>
           <div class="border-2 border-dashed border-slate-300 rounded-lg bg-white relative">
             <canvas id="signaturePad" class="w-full h-36 rounded-lg touch-none"></canvas>
-            <span id="signPlaceholder" class="absolute inset-0 flex items-center justify-center text-xs text-slate-300 pointer-events-none">Sign here using finger</span>
+            <span id="signPlaceholder" class="absolute inset-0 flex items-center justify-center text-xs text-slate-400 pointer-events-none">Sign here using finger</span>
           </div>
         </div>
       </div>
 
       <!-- Submit Button -->
-      <button type="submit" id="submitBtn" class="w-full py-3 bg-red-800 hover:bg-red-900 text-white font-bold rounded-lg shadow-md transition text-sm">
+      <button type="submit" id="submitBtn" class="w-full py-3.5 bg-red-800 hover:bg-red-900 text-white font-bold rounded-lg shadow-md transition text-sm">
         Submit Digital Intimation Slip
       </button>
 
     </form>
+
+    <!-- Modal: Manage Trades (Add / Delete) -->
+    <div id="tradeModal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
+      <div class="bg-white rounded-xl max-w-sm w-full p-5 shadow-2xl border border-slate-200 space-y-4">
+        <div class="flex justify-between items-center border-b pb-2">
+          <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Manage Department Trades</h3>
+          <button type="button" onclick="closeTradeModal()" class="text-slate-400 hover:text-slate-700 font-bold text-lg">&times;</button>
+        </div>
+        
+        <!-- Add Trade Input -->
+        <div class="flex gap-2">
+          <input type="text" id="newTradeInput" placeholder="New trade name..." class="flex-1 p-2 border rounded-md text-xs">
+          <button type="button" onclick="addNewTrade()" class="bg-slate-800 hover:bg-black text-white px-3 py-2 rounded-md text-xs font-bold">Add</button>
+        </div>
+
+        <!-- Existing Trades List -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 mb-2">Current Trades List:</label>
+          <div id="tradesListContainer" class="max-h-48 overflow-y-auto space-y-1.5 border rounded-lg p-2 bg-slate-50">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <button type="button" onclick="closeTradeModal()" class="w-full py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-md text-xs">
+          Done
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal: WhatsApp Share Modal -->
+    <div id="shareModal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
+      <div class="bg-white rounded-xl max-w-md w-full p-5 shadow-2xl border border-slate-200 text-center space-y-4">
+        <div class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto text-2xl font-bold">
+          ✓
+        </div>
+        <h3 class="text-lg font-bold text-slate-800">Slip Submitted Successfully!</h3>
+        <p class="text-xs text-slate-500">Record saved in Sheet & Drive. Send instant verification slip on WhatsApp.</p>
+        
+        <div id="slipReceiptPreview" class="bg-slate-50 border rounded-lg p-3 text-left text-xs space-y-1 font-mono text-slate-700 max-h-48 overflow-y-auto whitespace-pre-wrap">
+          <!-- Text preview injected here -->
+        </div>
+
+        <div class="flex flex-col gap-2 pt-2">
+          <a id="whatsappBtn" target="_blank" class="w-full py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg flex items-center justify-center gap-2 text-sm shadow transition">
+            <span>📲 Share on WhatsApp</span>
+          </a>
+          <button type="button" onclick="closeModalAndReset()" class="w-full py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded-lg text-xs">
+            Create New Slip
+          </button>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <script>
     // Paste your deployed Google Apps Script Web App URL here
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbydJmGVtwoUK_MDc1rIywIoUi82Or7K4dost6jsqPw8YKDSlpg4Jdqdbd8R2tiw7vIx/exec";
 
+    // Trade Management Logic with LocalStorage
+    const DEFAULT_TRADES = [
+      "Welder",
+      "Fitter / Mechanical",
+      "Electrician",
+      "Plumber",
+      "Carpenter",
+      "Mason / Civil"
+    ];
+
+    function getTrades() {
+      const stored = localStorage.getItem("cgc_maint_trades");
+      return stored ? JSON.parse(stored) : DEFAULT_TRADES;
+    }
+
+    function saveTrades(trades) {
+      localStorage.setItem("cgc_maint_trades", JSON.stringify(trades));
+      renderTradeOptions();
+      renderTradeManagerList();
+    }
+
+    function renderTradeOptions() {
+      const trades = getTrades();
+      const select = document.getElementById("trade");
+      const currentVal = select.value;
+      select.innerHTML = trades.map(t => `<option value="${t}">${t}</option>`).join("");
+      if (trades.includes(currentVal)) {
+        select.value = currentVal;
+      }
+    }
+
+    function renderTradeManagerList() {
+      const trades = getTrades();
+      const container = document.getElementById("tradesListContainer");
+      if (trades.length === 0) {
+        container.innerHTML = `<div class="text-xs text-slate-400 text-center py-2">No trades added yet.</div>`;
+        return;
+      }
+      container.innerHTML = trades.map((t, index) => `
+        <div class="flex justify-between items-center bg-white p-2 rounded border border-slate-200 text-xs">
+          <span class="font-medium text-slate-700">${t}</span>
+          <button type="button" onclick="deleteTrade(${index})" class="text-red-500 hover:text-red-700 font-bold px-1.5 py-0.5 rounded text-xs">&times; Delete</button>
+        </div>
+      `).join("");
+    }
+
+    function addNewTrade() {
+      const input = document.getElementById("newTradeInput");
+      const val = input.value.trim();
+      if (!val) return;
+      const trades = getTrades();
+      if (!trades.includes(val)) {
+        trades.push(val);
+        saveTrades(trades);
+      }
+      input.value = "";
+    }
+
+    function deleteTrade(index) {
+      const trades = getTrades();
+      if (confirm(`Delete "${trades[index]}" from trades?`)) {
+        trades.splice(index, 1);
+        saveTrades(trades);
+      }
+    }
+
+    function openTradeModal() {
+      renderTradeManagerList();
+      document.getElementById("tradeModal").classList.remove("hidden");
+    }
+
+    function closeTradeModal() {
+      document.getElementById("tradeModal").classList.add("hidden");
+    }
+
+    // Auto Slip ID & Date
     const slipId = "CGC-MNT-" + Math.floor(100000 + Math.random() * 900000);
     document.getElementById("slipIdDisplay").innerText = slipId;
     document.getElementById("currentDate").innerText = new Date().toLocaleDateString("en-IN");
@@ -181,7 +311,10 @@
       canvas.width = rect.width;
       canvas.height = rect.height;
     }
-    window.addEventListener("load", resizeCanvas);
+    window.addEventListener("load", () => {
+      renderTradeOptions();
+      resizeCanvas();
+    });
     window.addEventListener("resize", resizeCanvas);
 
     function getCoords(e) {
@@ -244,7 +377,7 @@
           c.height = img.height * scale;
           const cctx = c.getContext("2d");
           cctx.drawImage(img, 0, 0, c.width, c.height);
-          callback(c.toDataURL("image/jpeg", 0.7)); // Compressed JPEG
+          callback(c.toDataURL("image/jpeg", 0.7));
         };
         img.src = e.target.result;
       };
@@ -269,7 +402,7 @@
       }
     });
 
-    // Material Row
+    // Material Rows
     function addMaterialRow() {
       const row = document.createElement("div");
       row.className = "flex gap-2 material-row";
@@ -287,12 +420,16 @@
       document.getElementById("timeOut").value = formatted;
     }
 
-    // Submit
+    function closeModalAndReset() {
+      window.location.reload();
+    }
+
+    // Form Submit Handler
     document.getElementById("slipForm").addEventListener("submit", async function(e) {
       e.preventDefault();
 
       if (!hasSigned) {
-        alert("Please obtain the complainant's signature.");
+        alert("Please obtain the complainant's signature before submitting.");
         return;
       }
 
@@ -300,6 +437,7 @@
       submitBtn.disabled = true;
       submitBtn.innerText = "Uploading Photos & Slip...";
 
+      // Duration
       const tIn = document.getElementById("timeIn").value;
       const tOut = document.getElementById("timeOut").value;
       let durationStr = "N/A";
@@ -311,6 +449,7 @@
         durationStr = `${Math.floor(diff / 60)}h ${diff % 60}m`;
       }
 
+      // Materials
       const matNames = document.querySelectorAll(".mat-name");
       const matQtys = document.querySelectorAll(".mat-qty");
       let materialsArr = [];
@@ -347,8 +486,34 @@
           body: JSON.stringify(payload)
         });
 
-        alert("Slip, Photos & Signature uploaded successfully!");
-        window.location.reload();
+        // WhatsApp Slip Text
+        const waText = 
+`*🏛️ CGC MAINTENANCE INTIMATION SLIP*
+━━━━━━━━━━━━━━━━━━━
+*Slip ID:* ${payload.slipId}
+*Date:* ${document.getElementById("currentDate").innerText}
+*Trade:* ${payload.trade}
+
+*📍 Location:* ${payload.location}
+*🔧 Attending Staff:* ${payload.techName} (${payload.techEmpCode})
+*👤 Verified By:* ${payload.compName} (${payload.compEmpCode})
+
+*⚠️ Problem:* ${payload.problem}
+*🛠️ Work Done:* ${payload.workDone}
+*📦 Material Used:* ${payload.materials}
+*⏱️ Duration:* ${payload.duration} (${payload.timeIn} - ${payload.timeOut})
+━━━━━━━━━━━━━━━━━━━
+✅ _Job Completed & Digitally Verified_`;
+
+        document.getElementById("slipReceiptPreview").innerText = waText;
+        document.getElementById("whatsappBtn").href = `https://wa.me/?text=${encodeURIComponent(waText)}`;
+        
+        // Show Success & Share Modal
+        document.getElementById("shareModal").classList.remove("hidden");
+
+        submitBtn.disabled = false;
+        submitBtn.innerText = "Submit Digital Intimation Slip";
+
       } catch (err) {
         alert("Error saving: " + err.message);
         submitBtn.disabled = false;
