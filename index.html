@@ -13,7 +13,7 @@
     <!-- Header -->
     <div class="bg-red-800 text-white p-4 text-center">
       <h1 class="text-xl font-bold tracking-wide">CGC MAINTENANCE DEPARTMENT</h1>
-      <p class="text-xs text-red-200 uppercase tracking-wider mt-1">Digital Work Intimation & Clearance Slip</p>
+      <p class="text-xs text-red-200 uppercase tracking-wider mt-1">Digital Work Intimation & Verification Slip</p>
     </div>
 
     <form id="slipForm" class="p-4 sm:p-6 space-y-4">
@@ -30,7 +30,7 @@
         </div>
       </div>
 
-      <!-- Technician Section -->
+      <!-- Attending Staff -->
       <div class="bg-amber-50/50 p-4 rounded-lg border border-amber-200/80">
         <h2 class="text-xs font-bold text-amber-800 uppercase tracking-wider mb-3">Attending Staff Details</h2>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -59,7 +59,7 @@
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div class="sm:col-span-3">
           <label class="block text-xs font-semibold text-slate-600 mb-1">Job Location / Block / Room</label>
-          <input type="text" id="location" required placeholder="e.g. Boys Hostel 2, Mess Area / Room 104" class="w-full p-2 border rounded-md text-sm">
+          <input type="text" id="location" required placeholder="e.g. Boys Hostel 2, Mess Area" class="w-full p-2 border rounded-md text-sm">
         </div>
         <div>
           <label class="block text-xs font-semibold text-slate-600 mb-1">Time In (Started)</label>
@@ -78,11 +78,23 @@
       <div class="space-y-3">
         <div>
           <label class="block text-xs font-semibold text-slate-600 mb-1">Problem Reported</label>
-          <input type="text" id="problem" required placeholder="e.g. Main gate hinge broken / Pipe leakage" class="w-full p-2 border rounded-md text-sm">
+          <input type="text" id="problem" required placeholder="e.g. Door hinge broken / Pipe leakage" class="w-full p-2 border rounded-md text-sm">
         </div>
         <div>
           <label class="block text-xs font-semibold text-slate-600 mb-1">Work Done / Action Taken</label>
-          <textarea id="workDone" rows="2" required placeholder="e.g. Re-welded hinge with reinforcement flat" class="w-full p-2 border rounded-md text-sm"></textarea>
+          <textarea id="workDone" rows="2" required placeholder="e.g. Re-welded hinge with reinforcement" class="w-full p-2 border rounded-md text-sm"></textarea>
+        </div>
+      </div>
+
+      <!-- Job Done Photo Upload -->
+      <div class="border rounded-lg p-3 bg-slate-50">
+        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Job Done / Repaired Object Photo</label>
+        <div class="flex items-center gap-3">
+          <label class="flex-1 flex flex-col items-center justify-center p-3 border-2 border-dashed border-slate-300 rounded-lg cursor-pointer bg-white hover:bg-slate-50">
+            <span class="text-xs font-semibold text-slate-600">📷 Take Repaired Item Photo</span>
+            <input type="file" id="workPhotoInput" accept="image/*" capture="environment" class="hidden">
+          </label>
+          <div id="workPhotoPreview" class="w-16 h-16 rounded border bg-slate-200 flex items-center justify-center text-xs text-slate-400 overflow-hidden">No Pic</div>
         </div>
       </div>
 
@@ -100,10 +112,11 @@
         </div>
       </div>
 
-      <!-- Complainant Details -->
-      <div class="bg-blue-50/50 p-4 rounded-lg border border-blue-200/80">
-        <h2 class="text-xs font-bold text-blue-800 uppercase tracking-wider mb-3">Complainant / Verification Details</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+      <!-- Complainant Section (Photo + Sign) -->
+      <div class="bg-blue-50/50 p-4 rounded-lg border border-blue-200/80 space-y-4">
+        <h2 class="text-xs font-bold text-blue-800 uppercase tracking-wider">Complainant Verification & Sign-off</h2>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="block text-xs font-semibold text-slate-600 mb-1">Complainant Name</label>
             <input type="text" id="compName" required placeholder="e.g. Warden / Dept Incharge" class="w-full p-2 border rounded-md text-sm bg-white">
@@ -114,10 +127,22 @@
           </div>
         </div>
 
+        <!-- Complainant Live Photo -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Complainant Live Photo (During Sign-off)</label>
+          <div class="flex items-center gap-3">
+            <label class="flex-1 flex flex-col items-center justify-center p-3 border-2 border-dashed border-blue-300 rounded-lg cursor-pointer bg-white hover:bg-blue-50/30">
+              <span class="text-xs font-semibold text-blue-700">👤 Capture Complainant Photo</span>
+              <input type="file" id="compPhotoInput" accept="image/*" capture="user" class="hidden">
+            </label>
+            <div id="compPhotoPreview" class="w-16 h-16 rounded border bg-slate-200 flex items-center justify-center text-xs text-slate-400 overflow-hidden">No Pic</div>
+          </div>
+        </div>
+
         <!-- Touch Signature Pad -->
         <div>
           <div class="flex justify-between items-center mb-1">
-            <label class="text-xs font-semibold text-slate-600">Complainant Digital Signature</label>
+            <label class="text-xs font-semibold text-slate-600">Complainant Signature</label>
             <button type="button" onclick="clearSignature()" class="text-xs text-red-600 hover:underline">Clear Sign</button>
           </div>
           <div class="border-2 border-dashed border-slate-300 rounded-lg bg-white relative">
@@ -136,10 +161,9 @@
   </div>
 
   <script>
-    // Replace with your Google Apps Script Web App URL
+    // Paste your deployed Google Apps Script Web App URL here
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbydJmGVtwoUK_MDc1rIywIoUi82Or7K4dost6jsqPw8YKDSlpg4Jdqdbd8R2tiw7vIx/exec";
 
-    // Auto-generate Slip ID
     const slipId = "CGC-MNT-" + Math.floor(100000 + Math.random() * 900000);
     document.getElementById("slipIdDisplay").innerText = slipId;
     document.getElementById("currentDate").innerText = new Date().toLocaleDateString("en-IN");
@@ -203,7 +227,48 @@
       signPlaceholder.style.display = "flex";
     }
 
-    // Material Rows
+    // Image Compression Helper
+    let workPhotoBase64 = "";
+    let compPhotoBase64 = "";
+
+    function compressAndRead(file, callback) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const maxWidth = 800;
+          const scale = Math.min(1, maxWidth / img.width);
+          const c = document.createElement("canvas");
+          c.width = img.width * scale;
+          c.height = img.height * scale;
+          const cctx = c.getContext("2d");
+          cctx.drawImage(img, 0, 0, c.width, c.height);
+          callback(c.toDataURL("image/jpeg", 0.7)); // Compressed JPEG
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    document.getElementById("workPhotoInput").addEventListener("change", function(e) {
+      if (e.target.files[0]) {
+        compressAndRead(e.target.files[0], function(base64) {
+          workPhotoBase64 = base64;
+          document.getElementById("workPhotoPreview").innerHTML = `<img src="${base64}" class="w-full h-full object-cover">`;
+        });
+      }
+    });
+
+    document.getElementById("compPhotoInput").addEventListener("change", function(e) {
+      if (e.target.files[0]) {
+        compressAndRead(e.target.files[0], function(base64) {
+          compPhotoBase64 = base64;
+          document.getElementById("compPhotoPreview").innerHTML = `<img src="${base64}" class="w-full h-full object-cover">`;
+        });
+      }
+    });
+
+    // Material Row
     function addMaterialRow() {
       const row = document.createElement("div");
       row.className = "flex gap-2 material-row";
@@ -214,7 +279,6 @@
       document.getElementById("materialList").appendChild(row);
     }
 
-    // Auto Times
     function setNowTimes() {
       const now = new Date();
       const formatted = now.toTimeString().substring(0, 5);
@@ -222,20 +286,19 @@
       document.getElementById("timeOut").value = formatted;
     }
 
-    // Form Submit
+    // Submit
     document.getElementById("slipForm").addEventListener("submit", async function(e) {
       e.preventDefault();
 
       if (!hasSigned) {
-        alert("Please obtain the complainant's signature before submitting.");
+        alert("Please obtain the complainant's signature.");
         return;
       }
 
       const submitBtn = document.getElementById("submitBtn");
       submitBtn.disabled = true;
-      submitBtn.innerText = "Saving to Server...";
+      submitBtn.innerText = "Uploading Photos & Slip...";
 
-      // Calculate duration
       const tIn = document.getElementById("timeIn").value;
       const tOut = document.getElementById("timeOut").value;
       let durationStr = "N/A";
@@ -247,7 +310,6 @@
         durationStr = `${Math.floor(diff / 60)}h ${diff % 60}m`;
       }
 
-      // Collect materials
       const matNames = document.querySelectorAll(".mat-name");
       const matQtys = document.querySelectorAll(".mat-qty");
       let materialsArr = [];
@@ -271,7 +333,9 @@
         timeOut: tOut,
         duration: durationStr,
         materials: materialsArr.join(", ") || "None",
-        signature: canvas.toDataURL("image/png")
+        signature: canvas.toDataURL("image/png"),
+        workPhoto: workPhotoBase64,
+        compPhoto: compPhotoBase64
       };
 
       try {
@@ -282,7 +346,7 @@
           body: JSON.stringify(payload)
         });
 
-        alert("Digital Intimation Slip submitted successfully!");
+        alert("Slip, Photos & Signature uploaded successfully!");
         window.location.reload();
       } catch (err) {
         alert("Error saving: " + err.message);
