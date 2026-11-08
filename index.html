@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>CGC Maintenance - Digital Intimation Slip</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 text-slate-800 p-3 sm:p-6 font-sans">
+
+  <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
+    
+    <!-- Header -->
+    <div class="bg-red-800 text-white p-4 text-center">
+      <h1 class="text-xl font-bold tracking-wide">CGC MAINTENANCE DEPARTMENT</h1>
+      <p class="text-xs text-red-200 uppercase tracking-wider mt-1">Digital Work Intimation & Clearance Slip</p>
+    </div>
+
+    <form id="slipForm" class="p-4 sm:p-6 space-y-4">
+      
+      <!-- Slip ID & Date -->
+      <div class="flex justify-between items-center bg-slate-50 p-3 rounded-lg border border-slate-200 text-sm">
+        <div>
+          <span class="text-slate-500 font-medium">Slip ID:</span>
+          <span id="slipIdDisplay" class="font-bold text-slate-800"></span>
+        </div>
+        <div>
+          <span class="text-slate-500 font-medium">Date:</span>
+          <span id="currentDate" class="font-bold text-slate-800"></span>
+        </div>
+      </div>
+
+      <!-- Technician Section -->
+      <div class="bg-amber-50/50 p-4 rounded-lg border border-amber-200/80">
+        <h2 class="text-xs font-bold text-amber-800 uppercase tracking-wider mb-3">Attending Staff Details</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Trade</label>
+            <select id="trade" required class="w-full p-2 border rounded-md text-sm bg-white">
+              <option value="Welder">Welding</option>
+              <option value="Electrician">Electrical</option>
+              <option value="Plumber">Plumbing</option>
+              <option value="Carpenter">Carpentry</option>
+              <option value="Mason">Mason / Civil</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Staff / Tech Name</label>
+            <input type="text" id="techName" required placeholder="e.g. Sandeep Singh" class="w-full p-2 border rounded-md text-sm">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Staff Emp Code</label>
+            <input type="text" id="techEmpCode" required placeholder="e.g. 930-CU" class="w-full p-2 border rounded-md text-sm">
+          </div>
+        </div>
+      </div>
+
+      <!-- Location & Timings -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div class="sm:col-span-3">
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Job Location / Block / Room</label>
+          <input type="text" id="location" required placeholder="e.g. Boys Hostel 2, Mess Area / Room 104" class="w-full p-2 border rounded-md text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Time In (Started)</label>
+          <input type="time" id="timeIn" required class="w-full p-2 border rounded-md text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Time Out (Done)</label>
+          <input type="time" id="timeOut" required class="w-full p-2 border rounded-md text-sm">
+        </div>
+        <div class="flex items-end">
+          <button type="button" onclick="setNowTimes()" class="w-full py-2 bg-slate-200 hover:bg-slate-300 text-xs font-bold rounded-md text-slate-700">Set Current Time</button>
+        </div>
+      </div>
+
+      <!-- Work Info -->
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Problem Reported</label>
+          <input type="text" id="problem" required placeholder="e.g. Main gate hinge broken / Pipe leakage" class="w-full p-2 border rounded-md text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Work Done / Action Taken</label>
+          <textarea id="workDone" rows="2" required placeholder="e.g. Re-welded hinge with reinforcement flat" class="w-full p-2 border rounded-md text-sm"></textarea>
+        </div>
+      </div>
+
+      <!-- Material Consumed -->
+      <div class="border rounded-lg p-3 bg-slate-50">
+        <div class="flex justify-between items-center mb-2">
+          <label class="text-xs font-bold uppercase tracking-wider text-slate-700">Material Used</label>
+          <button type="button" onclick="addMaterialRow()" class="text-xs bg-slate-800 text-white px-2 py-1 rounded hover:bg-black">+ Add Item</button>
+        </div>
+        <div id="materialList" class="space-y-2">
+          <div class="flex gap-2 material-row">
+            <input type="text" placeholder="Item name / spec" class="w-2/3 p-1.5 border rounded text-xs mat-name">
+            <input type="text" placeholder="Qty (e.g. 2 pcs / 1 kg)" class="w-1/3 p-1.5 border rounded text-xs mat-qty">
+          </div>
+        </div>
+      </div>
+
+      <!-- Complainant Details -->
+      <div class="bg-blue-50/50 p-4 rounded-lg border border-blue-200/80">
+        <h2 class="text-xs font-bold text-blue-800 uppercase tracking-wider mb-3">Complainant / Verification Details</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Complainant Name</label>
+            <input type="text" id="compName" required placeholder="e.g. Warden / Dept Incharge" class="w-full p-2 border rounded-md text-sm bg-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Complainant Emp Code</label>
+            <input type="text" id="compEmpCode" required placeholder="e.g. CGC-4412" class="w-full p-2 border rounded-md text-sm bg-white">
+          </div>
+        </div>
+
+        <!-- Touch Signature Pad -->
+        <div>
+          <div class="flex justify-between items-center mb-1">
+            <label class="text-xs font-semibold text-slate-600">Complainant Digital Signature</label>
+            <button type="button" onclick="clearSignature()" class="text-xs text-red-600 hover:underline">Clear Sign</button>
+          </div>
+          <div class="border-2 border-dashed border-slate-300 rounded-lg bg-white relative">
+            <canvas id="signaturePad" class="w-full h-36 rounded-lg touch-none"></canvas>
+            <span id="signPlaceholder" class="absolute inset-0 flex items-center justify-center text-xs text-slate-300 pointer-events-none">Sign here using finger</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" id="submitBtn" class="w-full py-3 bg-red-800 hover:bg-red-900 text-white font-bold rounded-lg shadow-md transition text-sm">
+        Submit Digital Intimation Slip
+      </button>
+
+    </form>
+  </div>
+
+  <script>
+    // Replace with your Google Apps Script Web App URL
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyCkzRaP-Z9RGXvpB_yBFjLujcY6gmP6LBphY2tHvMud8-zh1aaJbk0MuWhZEdQkuwb/exec";
+
+    // Auto-generate Slip ID
+    const slipId = "CGC-MNT-" + Math.floor(100000 + Math.random() * 900000);
+    document.getElementById("slipIdDisplay").innerText = slipId;
+    document.getElementById("currentDate").innerText = new Date().toLocaleDateString("en-IN");
+
+    // Canvas Signature Setup
+    const canvas = document.getElementById("signaturePad");
+    const ctx = canvas.getContext("2d");
+    const signPlaceholder = document.getElementById("signPlaceholder");
+    let isDrawing = false;
+    let hasSigned = false;
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+    }
+    window.addEventListener("load", resizeCanvas);
+    window.addEventListener("resize", resizeCanvas);
+
+    function getCoords(e) {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    function startDraw(e) {
+      isDrawing = true;
+      hasSigned = true;
+      signPlaceholder.style.display = "none";
+      const { x, y } = getCoords(e);
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      e.preventDefault();
+    }
+
+    function draw(e) {
+      if (!isDrawing) return;
+      const { x, y } = getCoords(e);
+      ctx.lineWidth = 2.5;
+      ctx.lineCap = "round";
+      ctx.strokeStyle = "#1e293b";
+      ctx.lineTo(x, y);
+      ctx.stroke();
+      e.preventDefault();
+    }
+
+    function stopDraw() { isDrawing = false; }
+
+    canvas.addEventListener("mousedown", startDraw);
+    canvas.addEventListener("mousemove", draw);
+    window.addEventListener("mouseup", stopDraw);
+
+    canvas.addEventListener("touchstart", startDraw);
+    canvas.addEventListener("touchmove", draw);
+    window.addEventListener("touchend", stopDraw);
+
+    function clearSignature() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      hasSigned = false;
+      signPlaceholder.style.display = "flex";
+    }
+
+    // Material Rows
+    function addMaterialRow() {
+      const row = document.createElement("div");
+      row.className = "flex gap-2 material-row";
+      row.innerHTML = `
+        <input type="text" placeholder="Item name / spec" class="w-2/3 p-1.5 border rounded text-xs mat-name">
+        <input type="text" placeholder="Qty" class="w-1/3 p-1.5 border rounded text-xs mat-qty">
+      `;
+      document.getElementById("materialList").appendChild(row);
+    }
+
+    // Auto Times
+    function setNowTimes() {
+      const now = new Date();
+      const formatted = now.toTimeString().substring(0, 5);
+      if (!document.getElementById("timeIn").value) document.getElementById("timeIn").value = formatted;
+      document.getElementById("timeOut").value = formatted;
+    }
+
+    // Form Submit
+    document.getElementById("slipForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      if (!hasSigned) {
+        alert("Please obtain the complainant's signature before submitting.");
+        return;
+      }
+
+      const submitBtn = document.getElementById("submitBtn");
+      submitBtn.disabled = true;
+      submitBtn.innerText = "Saving to Server...";
+
+      // Calculate duration
+      const tIn = document.getElementById("timeIn").value;
+      const tOut = document.getElementById("timeOut").value;
+      let durationStr = "N/A";
+      if (tIn && tOut) {
+        const [h1, m1] = tIn.split(":").map(Number);
+        const [h2, m2] = tOut.split(":").map(Number);
+        let diff = (h2 * 60 + m2) - (h1 * 60 + m1);
+        if (diff < 0) diff += 24 * 60;
+        durationStr = `${Math.floor(diff / 60)}h ${diff % 60}m`;
+      }
+
+      // Collect materials
+      const matNames = document.querySelectorAll(".mat-name");
+      const matQtys = document.querySelectorAll(".mat-qty");
+      let materialsArr = [];
+      matNames.forEach((input, i) => {
+        if (input.value.trim()) {
+          materialsArr.push(`${input.value.trim()} (${matQtys[i].value.trim() || '1'})`);
+        }
+      });
+
+      const payload = {
+        slipId: slipId,
+        trade: document.getElementById("trade").value,
+        techName: document.getElementById("techName").value,
+        techEmpCode: document.getElementById("techEmpCode").value,
+        compName: document.getElementById("compName").value,
+        compEmpCode: document.getElementById("compEmpCode").value,
+        location: document.getElementById("location").value,
+        problem: document.getElementById("problem").value,
+        workDone: document.getElementById("workDone").value,
+        timeIn: tIn,
+        timeOut: tOut,
+        duration: durationStr,
+        materials: materialsArr.join(", ") || "None",
+        signature: canvas.toDataURL("image/png")
+      };
+
+      try {
+        await fetch(SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        alert("Digital Intimation Slip submitted successfully!");
+        window.location.reload();
+      } catch (err) {
+        alert("Error saving: " + err.message);
+        submitBtn.disabled = false;
+        submitBtn.innerText = "Submit Digital Intimation Slip";
+      }
+    });
+  </script>
+</body>
+</html>
