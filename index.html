@@ -3,208 +3,232 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>CGC Maintenance - Digital Intimation Slip</title>
+  <title>CGC Smart Maintenance Portal</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- QRCode.js Library for instant dynamic QR generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
-<body class="bg-slate-100 text-slate-800 p-3 sm:p-6 font-sans min-h-screen flex flex-col justify-between">
+<body class="bg-slate-100 text-slate-800 p-2 sm:p-5 font-sans min-h-screen flex flex-col justify-between">
 
-  <div class="max-w-2xl mx-auto w-full bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden relative mb-4">
+  <div class="max-w-2xl mx-auto w-full bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden relative">
     
-    <!-- Header with Branding -->
+    <!-- Header with Sandeep Singh Branding -->
     <div class="bg-red-800 text-white p-4 text-center relative shadow-sm">
-      <h1 class="text-xl font-bold tracking-wide">CGC MAINTENANCE DEPARTMENT</h1>
-      <p class="text-xs text-red-200 uppercase tracking-wider mt-0.5">Digital Work Intimation & Verification Slip</p>
-      <div class="mt-2 inline-block bg-red-950/60 border border-red-700/60 rounded-full px-3 py-0.5">
-        <p class="text-[11px] text-red-100 font-medium">Dev & Admin: <span class="font-bold text-white">Sandeep Singh</span> (Emp Code: <span class="text-amber-300 font-mono font-bold">J-5383</span>)</p>
+      <h1 class="text-xl font-bold tracking-wide">CGC SMART MAINTENANCE PORTAL</h1>
+      <p class="text-[11px] text-red-200 uppercase tracking-wider mt-0.5">Automated Work Intimation & Verified Clearance</p>
+      <div class="mt-2 inline-block bg-red-950/70 border border-red-700 rounded-full px-3 py-0.5">
+        <p class="text-[11px] text-red-100 font-medium">System by: <span class="font-bold text-white">Sandeep Singh</span> (Emp Code: <span class="text-amber-300 font-mono font-bold">J-5383</span>)</p>
       </div>
     </div>
 
-    <form id="slipForm" class="p-4 sm:p-6 space-y-4">
-      
-      <!-- Slip ID & Date -->
-      <div class="flex justify-between items-center bg-slate-50 p-3 rounded-lg border border-slate-200 text-sm">
-        <div>
-          <span class="text-slate-500 font-medium">Slip ID:</span>
-          <span id="slipIdDisplay" class="font-bold text-slate-800"></span>
-        </div>
-        <div>
-          <span class="text-slate-500 font-medium">Date:</span>
-          <span id="currentDate" class="font-bold text-slate-800"></span>
-        </div>
+    <!-- Navigation Tabs -->
+    <div class="flex border-b border-slate-200 bg-slate-50 text-xs font-bold text-slate-600 text-center">
+      <button type="button" onclick="switchTab('raiseTab')" id="tabBtnRaise" class="flex-1 py-3 border-b-2 border-red-800 text-red-800 bg-white">
+        📢 Raise Complaint
+      </button>
+      <button type="button" onclick="switchTab('techTab')" id="tabBtnTech" class="flex-1 py-3 border-b-2 border-transparent hover:text-slate-900">
+        🛠️ Technician Desk (<span id="openCountBadge">0</span>)
+      </button>
+    </div>
+
+    <!-- ================= TAB 1: RAISE COMPLAINT ================= -->
+    <div id="raiseTab" class="p-4 sm:p-6 space-y-4">
+      <div class="bg-amber-50 border border-amber-200 p-3 rounded-lg text-xs text-amber-900 leading-relaxed">
+        <strong>Notice for Staff / Wardens:</strong> Complaint submit hone par aapko ek <strong>Secret 4-Digit PIN</strong> milega. Technician jab kaam theek kar dega, tab wo PIN mangega verification ke liye.
       </div>
 
-      <!-- Attending Staff Details -->
-      <div class="bg-amber-50/50 p-4 rounded-lg border border-amber-200/80">
-        <div class="flex justify-between items-center mb-3">
-          <h2 class="text-xs font-bold text-amber-800 uppercase tracking-wider">Attending Staff Details</h2>
-          <button type="button" onclick="openTradeModal()" class="text-xs bg-amber-200 hover:bg-amber-300 text-amber-900 font-semibold px-2 py-0.5 rounded transition">
-            ⚙️ Manage Trades
-          </button>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Trade</label>
-            <select id="trade" required class="w-full p-2 border rounded-md text-sm bg-white font-medium">
-              <!-- Dynamically populated -->
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Staff / Tech Name</label>
-            <input type="text" id="techName" required value="Sandeep Singh" placeholder="Tech Name" class="w-full p-2 border rounded-md text-sm">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Staff Emp Code</label>
-            <input type="text" id="techEmpCode" required value="J-5383" placeholder="Emp Code" class="w-full p-2 border rounded-md text-sm font-medium">
-          </div>
-        </div>
-      </div>
-
-      <!-- Location & Timings -->
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div class="sm:col-span-3">
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Job Location / Block / Room</label>
-          <input type="text" id="location" required placeholder="e.g. Boys Hostel 2, Mess Area / Room 104" class="w-full p-2 border rounded-md text-sm">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Time In (Started)</label>
-          <input type="time" id="timeIn" required class="w-full p-2 border rounded-md text-sm">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Time Out (Done)</label>
-          <input type="time" id="timeOut" required class="w-full p-2 border rounded-md text-sm">
-        </div>
-        <div class="flex items-end">
-          <button type="button" onclick="setNowTimes()" class="w-full py-2 bg-slate-200 hover:bg-slate-300 text-xs font-bold rounded-md text-slate-700">Set Current Time</button>
-        </div>
-      </div>
-
-      <!-- Work Details -->
-      <div class="space-y-3">
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Problem Reported</label>
-          <input type="text" id="problem" required placeholder="e.g. Main gate hinge broken / Conveyor belt alignment" class="w-full p-2 border rounded-md text-sm">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Work Done / Action Taken</label>
-          <textarea id="workDone" rows="2" required placeholder="e.g. Re-welded hinge with MS flat / Fixed mechanical pulley" class="w-full p-2 border rounded-md text-sm"></textarea>
-        </div>
-      </div>
-
-      <!-- Job Done Photo Upload -->
-      <div class="border rounded-lg p-3 bg-slate-50">
-        <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Job Done / Repaired Object Photo</label>
-        <div class="flex items-center gap-3">
-          <label class="flex-1 flex flex-col items-center justify-center p-3 border-2 border-dashed border-slate-300 rounded-lg cursor-pointer bg-white hover:bg-slate-50 transition">
-            <span class="text-xs font-semibold text-slate-600">📷 Take Repaired Item Photo</span>
-            <input type="file" id="workPhotoInput" accept="image/*" capture="environment" class="hidden">
-          </label>
-          <div id="workPhotoPreview" class="w-16 h-16 rounded border bg-slate-200 flex items-center justify-center text-xs text-slate-400 overflow-hidden font-medium">No Pic</div>
-        </div>
-      </div>
-
-      <!-- Material Consumed -->
-      <div class="border rounded-lg p-3 bg-slate-50">
-        <div class="flex justify-between items-center mb-2">
-          <label class="text-xs font-bold uppercase tracking-wider text-slate-700">Material Used</label>
-          <button type="button" onclick="addMaterialRow()" class="text-xs bg-slate-800 text-white px-2.5 py-1 rounded hover:bg-black font-medium transition">+ Add Item</button>
-        </div>
-        <div id="materialList" class="space-y-2">
-          <div class="flex gap-2 material-row">
-            <input type="text" placeholder="Item name / spec (e.g. MS Flat / 6013 Rod)" class="w-2/3 p-1.5 border rounded text-xs mat-name">
-            <input type="text" placeholder="Qty (e.g. 2 pcs / 1 kg)" class="w-1/3 p-1.5 border rounded text-xs mat-qty">
-          </div>
-        </div>
-      </div>
-
-      <!-- Complainant Section (Name, Code, Photo & Signature) -->
-      <div class="bg-blue-50/50 p-4 rounded-lg border border-blue-200/80 space-y-4">
-        <h2 class="text-xs font-bold text-blue-800 uppercase tracking-wider">Complainant Verification & Sign-off</h2>
-        
+      <form id="raiseForm" class="space-y-3.5">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Complainant Name</label>
-            <input type="text" id="compName" required placeholder="e.g. Warden / Dept Incharge" class="w-full p-2 border rounded-md text-sm bg-white">
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Trade Required</label>
+            <select id="raiseTrade" required class="w-full p-2 border rounded-md text-sm bg-white"></select>
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Complainant Emp Code</label>
-            <input type="text" id="compEmpCode" required placeholder="e.g. CGC-4412" class="w-full p-2 border rounded-md text-sm bg-white">
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Job Location / Block / Room</label>
+            <input type="text" id="raiseLocation" required placeholder="e.g. Tagore Hostel Room 210 / Mess 1" class="w-full p-2 border rounded-md text-sm">
           </div>
         </div>
 
-        <!-- Complainant Live Photo -->
         <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Complainant Live Photo (During Sign-off)</label>
-          <div class="flex items-center gap-3">
-            <label class="flex-1 flex flex-col items-center justify-center p-3 border-2 border-dashed border-blue-300 rounded-lg cursor-pointer bg-white hover:bg-blue-50/30 transition">
-              <span class="text-xs font-semibold text-blue-700">👤 Capture Complainant Photo</span>
-              <input type="file" id="compPhotoInput" accept="image/*" capture="user" class="hidden">
-            </label>
-            <div id="compPhotoPreview" class="w-16 h-16 rounded border bg-slate-200 flex items-center justify-center text-xs text-slate-400 overflow-hidden font-medium">No Pic</div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Problem Description</label>
+          <textarea id="raiseProblem" rows="2" required placeholder="Kya problem hai detail me likhein (e.g. Door hinge broken)" class="w-full p-2 border rounded-md text-sm"></textarea>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Your Name (Complainant)</label>
+            <input type="text" id="raiseCompName" required placeholder="e.g. Warden / Supervisor" class="w-full p-2 border rounded-md text-sm">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Your Emp Code</label>
+            <input type="text" id="raiseCompEmpCode" required placeholder="e.g. CGC-4412" class="w-full p-2 border rounded-md text-sm">
           </div>
         </div>
 
-        <!-- Touch Signature Pad -->
-        <div>
-          <div class="flex justify-between items-center mb-1">
-            <label class="text-xs font-semibold text-slate-600">Complainant Digital Signature</label>
-            <button type="button" onclick="clearSignature()" class="text-xs text-red-600 hover:underline">Clear Sign</button>
-          </div>
-          <div class="border-2 border-dashed border-slate-300 rounded-lg bg-white relative">
-            <canvas id="signaturePad" class="w-full h-36 rounded-lg touch-none"></canvas>
-            <span id="signPlaceholder" class="absolute inset-0 flex items-center justify-center text-xs text-slate-400 pointer-events-none">Sign here using finger</span>
-          </div>
+        <button type="submit" id="raiseSubmitBtn" class="w-full py-3 bg-red-800 hover:bg-red-900 text-white font-bold rounded-lg text-sm shadow transition">
+          🚀 Submit Complaint & Generate PIN
+        </button>
+      </form>
+    </div>
+
+    <!-- ================= TAB 2: TECHNICIAN DESK ================= -->
+    <div id="techTab" class="p-4 sm:p-6 space-y-4 hidden">
+      
+      <!-- Open Tickets List -->
+      <div id="openTicketsView">
+        <div class="flex justify-between items-center mb-3">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-700">Pending Complaints at Campus</h2>
+          <button type="button" onclick="loadOpenTickets()" class="text-xs text-blue-600 font-bold hover:underline">🔄 Refresh List</button>
+        </div>
+        <div id="ticketsList" class="space-y-2.5">
+          <div class="text-center py-8 text-xs text-slate-400">Loading open complaints...</div>
         </div>
       </div>
 
-      <!-- Submit Button -->
-      <button type="submit" id="submitBtn" class="w-full py-3.5 bg-red-800 hover:bg-red-900 text-white font-bold rounded-lg shadow-md transition text-sm">
-        Submit Digital Intimation Slip
-      </button>
-
-    </form>
-
-    <!-- Modal: Manage Trades -->
-    <div id="tradeModal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-      <div class="bg-white rounded-xl max-w-sm w-full p-5 shadow-2xl border border-slate-200 space-y-4">
-        <div class="flex justify-between items-center border-b pb-2">
-          <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Manage Department Trades</h3>
-          <button type="button" onclick="closeTradeModal()" class="text-slate-400 hover:text-slate-700 font-bold text-lg">&times;</button>
-        </div>
-        
-        <div class="flex gap-2">
-          <input type="text" id="newTradeInput" placeholder="New trade name..." class="flex-1 p-2 border rounded-md text-xs">
-          <button type="button" onclick="addNewTrade()" class="bg-slate-800 hover:bg-black text-white px-3 py-2 rounded-md text-xs font-bold">Add</button>
+      <!-- Action Form for Attending Selected Ticket -->
+      <div id="attendView" class="hidden space-y-4">
+        <div class="flex justify-between items-center bg-slate-100 p-2.5 rounded-lg border text-xs">
+          <div><span class="text-slate-500">Ticket:</span> <strong id="attTicketId" class="text-red-800"></strong></div>
+          <button type="button" onclick="cancelAttend()" class="text-xs text-red-600 font-bold hover:underline">&larr; Back to List</button>
         </div>
 
+        <div class="bg-blue-50/60 p-3 rounded-lg border border-blue-200 text-xs space-y-1">
+          <div><strong>Location:</strong> <span id="attLocation"></span></div>
+          <div><strong>Problem:</strong> <span id="attProblem"></span></div>
+          <div><strong>Reported By:</strong> <span id="attComplainant"></span></div>
+        </div>
+
+        <!-- Attending Staff (Sandeep Singh Auto Filled) -->
+        <div class="bg-amber-50/60 p-3 rounded-lg border border-amber-200">
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <div>
+              <label class="font-semibold text-slate-600">Technician</label>
+              <input type="text" id="techName" value="Sandeep Singh" class="w-full p-1.5 border rounded bg-white text-xs mt-1">
+            </div>
+            <div>
+              <label class="font-semibold text-slate-600">Emp Code</label>
+              <input type="text" id="techEmpCode" value="J-5383" class="w-full p-1.5 border rounded bg-white text-xs mt-1">
+            </div>
+          </div>
+        </div>
+
+        <!-- Timings -->
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Time In</label>
+            <input type="time" id="timeIn" required class="w-full p-1.5 border rounded text-xs">
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Time Out</label>
+            <input type="time" id="timeOut" required class="w-full p-1.5 border rounded text-xs">
+          </div>
+          <div class="flex items-end">
+            <button type="button" onclick="setNowTimes()" class="w-full py-2 bg-slate-200 text-[11px] font-bold rounded">Now</button>
+          </div>
+        </div>
+
+        <!-- Work Done -->
         <div>
-          <label class="block text-xs font-semibold text-slate-500 mb-2">Current Trades List:</label>
-          <div id="tradesListContainer" class="max-h-48 overflow-y-auto space-y-1.5 border rounded-lg p-2 bg-slate-50"></div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Work Done / Action Taken</label>
+          <textarea id="workDone" rows="2" placeholder="Kya repair kiya detail me likhein..." class="w-full p-2 border rounded text-xs"></textarea>
         </div>
 
-        <button type="button" onclick="closeTradeModal()" class="w-full py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-md text-xs">
-          Done
+        <!-- Material Used -->
+        <div class="border rounded-lg p-2.5 bg-slate-50">
+          <div class="flex justify-between items-center mb-1.5">
+            <label class="text-[11px] font-bold uppercase text-slate-700">Material Used</label>
+            <button type="button" onclick="addMaterialRow()" class="text-[11px] bg-slate-800 text-white px-2 py-0.5 rounded">+ Item</button>
+          </div>
+          <div id="materialList" class="space-y-1.5">
+            <div class="flex gap-2 material-row">
+              <input type="text" placeholder="Item name (e.g. MS Flat / Hinge)" class="w-2/3 p-1 border rounded text-xs mat-name">
+              <input type="text" placeholder="Qty" class="w-1/3 p-1 border rounded text-xs mat-qty">
+            </div>
+          </div>
+        </div>
+
+        <!-- Repaired Item Photo -->
+        <div class="border rounded-lg p-2.5 bg-slate-50">
+          <label class="block text-[11px] font-bold uppercase text-slate-700 mb-1">Repaired Item Live Photo</label>
+          <div class="flex items-center gap-3">
+            <label class="flex-1 p-2.5 border-2 border-dashed rounded-lg text-center cursor-pointer bg-white hover:bg-slate-100">
+              <span class="text-xs text-slate-600">📷 Take Repaired Item Photo</span>
+              <input type="file" id="workPhotoInput" accept="image/*" capture="environment" class="hidden">
+            </label>
+            <div id="workPhotoPreview" class="w-14 h-14 rounded border bg-slate-200 flex items-center justify-center text-[10px] text-slate-400 overflow-hidden font-medium">No Pic</div>
+          </div>
+        </div>
+
+        <!-- Verification Choices (PIN vs QR) -->
+        <div class="bg-slate-100 p-3.5 rounded-xl border border-slate-300 space-y-3">
+          <label class="block text-xs font-bold text-slate-800 uppercase tracking-wide">Verification Method</label>
+          
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" onclick="selectVerifyMethod('PIN')" id="btnMethodPIN" class="py-2 text-xs font-bold rounded-lg border bg-red-800 text-white">
+              🔢 Secret PIN Entry
+            </button>
+            <button type="button" onclick="selectVerifyMethod('QR')" id="btnMethodQR" class="py-2 text-xs font-bold rounded-lg border bg-white text-slate-700">
+              📷 Show QR to Complainant
+            </button>
+          </div>
+
+          <!-- Section A: PIN Box -->
+          <div id="pinBox" class="space-y-1.5 pt-1">
+            <p class="text-[11px] text-slate-600">Complainant se unka 4-Digit Secret PIN mang kar yahan enter karein:</p>
+            <input type="password" maxlength="4" id="enteredPin" placeholder="Enter 4-Digit PIN" class="w-full text-center tracking-widest text-lg font-mono font-bold p-2 border rounded-md bg-white">
+            <button type="button" onclick="submitCloseTicket('PIN')" id="submitPinBtn" class="w-full py-2.5 bg-green-700 hover:bg-green-800 text-white font-bold rounded-lg text-xs shadow mt-2">
+              ✓ Verify Secret PIN & Close Ticket
+            </button>
+          </div>
+
+          <!-- Section B: QR Box -->
+          <div id="qrBox" class="hidden text-center space-y-2 pt-1">
+            <p class="text-[11px] text-slate-600">Complainant ko bole apne phone camera se ye QR code scan karein:</p>
+            <div id="qrcodeCanvas" class="flex justify-center p-2 bg-white rounded-lg border inline-block mx-auto"></div>
+            <button type="button" onclick="submitCloseTicket('QR')" id="submitQrBtn" class="w-full py-2 bg-slate-800 text-white font-bold rounded-lg text-xs shadow mt-2">
+              Generate & Lock Ticket via QR
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ================= MODAL: TICKET CREATED (FOR COMPLAINANT) ================= -->
+    <div id="createdModal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
+      <div class="bg-white rounded-xl max-w-sm w-full p-5 shadow-2xl text-center space-y-3">
+        <div class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto text-xl font-bold">✓</div>
+        <h3 class="text-base font-bold text-slate-800">Complaint Registered!</h3>
+        <p class="text-xs text-slate-500">Aapka secret clearance PIN niche diya gaya hai. Jab technician kaam kar de tabhi ye PIN unko dein:</p>
+        
+        <div class="bg-amber-50 border-2 border-dashed border-amber-300 p-3 rounded-lg">
+          <div class="text-[11px] text-amber-700 font-bold uppercase">Secret Closure PIN</div>
+          <div id="displaySecretPin" class="text-3xl font-mono font-extrabold text-amber-900 tracking-widest mt-1"></div>
+          <div id="displayTicketId" class="text-[11px] text-slate-500 font-mono mt-1"></div>
+        </div>
+
+        <button type="button" onclick="closeCreatedModal()" class="w-full py-2.5 bg-red-800 hover:bg-red-900 text-white font-bold rounded-lg text-xs">
+          Noted & Done
         </button>
       </div>
     </div>
 
-    <!-- Modal: WhatsApp Share Modal -->
+    <!-- ================= MODAL: WHATSAPP SHARE AFTER CLOSURE ================= -->
     <div id="shareModal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-      <div class="bg-white rounded-xl max-w-md w-full p-5 shadow-2xl border border-slate-200 text-center space-y-4">
-        <div class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto text-2xl font-bold">
-          ✓
-        </div>
-        <h3 class="text-lg font-bold text-slate-800">Slip Submitted Successfully!</h3>
-        <p class="text-xs text-slate-500">Record saved in Sheet & Drive. Send instant verification slip on WhatsApp.</p>
+      <div class="bg-white rounded-xl max-w-md w-full p-5 shadow-2xl text-center space-y-3">
+        <div class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto text-xl font-bold">✓</div>
+        <h3 class="text-base font-bold text-slate-800">Job Verified & Closed!</h3>
+        <p class="text-xs text-slate-500">Record officially verified and saved in CGC Sheet & Drive.</p>
         
-        <div id="slipReceiptPreview" class="bg-slate-50 border rounded-lg p-3 text-left text-xs space-y-1 font-mono text-slate-700 max-h-48 overflow-y-auto whitespace-pre-wrap"></div>
+        <div id="slipReceiptPreview" class="bg-slate-50 border rounded-lg p-3 text-left text-xs font-mono text-slate-700 max-h-40 overflow-y-auto whitespace-pre-wrap"></div>
 
-        <div class="flex flex-col gap-2 pt-2">
-          <button type="button" id="whatsappBtn" onclick="shareToWhatsApp()" class="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg flex items-center justify-center gap-2 text-sm shadow transition">
-            <span>📲 Share on WhatsApp (Photo + Text)</span>
+        <div class="flex flex-col gap-2 pt-1">
+          <button type="button" onclick="shareToWhatsApp()" class="w-full py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg flex items-center justify-center gap-2 text-xs shadow">
+            <span>📲 Share Clearance Slip on WhatsApp</span>
           </button>
-          <button type="button" onclick="closeModalAndReset()" class="w-full py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded-lg text-xs">
-            Create New Slip
+          <button type="button" onclick="closeShareModal()" class="w-full py-2 bg-slate-200 text-slate-700 font-semibold rounded-lg text-xs">
+            Back to Open Complaints
           </button>
         </div>
       </div>
@@ -212,17 +236,15 @@
 
   </div>
 
-  <!-- Footer Branding -->
   <footer class="text-center py-2 text-xs text-slate-400">
-    Designed & Engineered by <span class="font-bold text-slate-600">Sandeep Singh</span> (Emp Code: <span class="font-mono font-semibold text-slate-700">J-5383</span>) &bull; CGC Maintenance
+    System Engineered by <strong class="text-slate-600">Sandeep Singh</strong> (Emp: <span class="font-mono text-slate-700">J-5383</span>) &bull; CGC Maintenance
   </footer>
 
   <script>
     // Paste your deployed Google Apps Script Web App URL here
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbydJmGVtwoUK_MDc1rIywIoUi82Or7K4dost6jsqPw8YKDSlpg4Jdqdbd8R2tiw7vIx/exec";
 
-    // Default Trades
-    const DEFAULT_TRADES = [
+    const TRADES_LIST = [
       "Welder",
       "Fitter / Mechanical",
       "Electrician",
@@ -231,143 +253,157 @@
       "Mason / Civil"
     ];
 
-    function getTrades() {
-      const stored = localStorage.getItem("cgc_maint_trades");
-      return stored ? JSON.parse(stored) : DEFAULT_TRADES;
-    }
-
-    function saveTrades(trades) {
-      localStorage.setItem("cgc_maint_trades", JSON.stringify(trades));
-      renderTradeOptions();
-      renderTradeManagerList();
-    }
-
-    function renderTradeOptions() {
-      const trades = getTrades();
-      const select = document.getElementById("trade");
-      const currentVal = select.value;
-      select.innerHTML = trades.map(t => `<option value="${t}">${t}</option>`).join("");
-      if (trades.includes(currentVal)) {
-        select.value = currentVal;
-      }
-    }
-
-    function renderTradeManagerList() {
-      const trades = getTrades();
-      const container = document.getElementById("tradesListContainer");
-      if (trades.length === 0) {
-        container.innerHTML = `<div class="text-xs text-slate-400 text-center py-2">No trades added yet.</div>`;
-        return;
-      }
-      container.innerHTML = trades.map((t, index) => `
-        <div class="flex justify-between items-center bg-white p-2 rounded border border-slate-200 text-xs">
-          <span class="font-medium text-slate-700">${t}</span>
-          <button type="button" onclick="deleteTrade(${index})" class="text-red-500 hover:text-red-700 font-bold px-1.5 py-0.5 rounded text-xs">&times; Delete</button>
-        </div>
-      `).join("");
-    }
-
-    function addNewTrade() {
-      const input = document.getElementById("newTradeInput");
-      const val = input.value.trim();
-      if (!val) return;
-      const trades = getTrades();
-      if (!trades.includes(val)) {
-        trades.push(val);
-        saveTrades(trades);
-      }
-      input.value = "";
-    }
-
-    function deleteTrade(index) {
-      const trades = getTrades();
-      if (confirm(`Delete "${trades[index]}" from trades?`)) {
-        trades.splice(index, 1);
-        saveTrades(trades);
-      }
-    }
-
-    function openTradeModal() {
-      renderTradeManagerList();
-      document.getElementById("tradeModal").classList.remove("hidden");
-    }
-
-    function closeTradeModal() {
-      document.getElementById("tradeModal").classList.add("hidden");
-    }
-
-    // Slip ID & Current Date
-    const slipId = "CGC-MNT-" + Math.floor(100000 + Math.random() * 900000);
-    document.getElementById("slipIdDisplay").innerText = slipId;
-    document.getElementById("currentDate").innerText = new Date().toLocaleDateString("en-IN");
-
-    // Canvas Signature Setup
-    const canvas = document.getElementById("signaturePad");
-    const ctx = canvas.getContext("2d");
-    const signPlaceholder = document.getElementById("signPlaceholder");
-    let isDrawing = false;
-    let hasSigned = false;
-
-    function resizeCanvas() {
-      const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = rect.height;
-    }
-    window.addEventListener("load", () => {
-      renderTradeOptions();
-      resizeCanvas();
-    });
-    window.addEventListener("resize", resizeCanvas);
-
-    function getCoords(e) {
-      const rect = canvas.getBoundingClientRect();
-      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-      return { x: clientX - rect.left, y: clientY - rect.top };
-    }
-
-    function startDraw(e) {
-      isDrawing = true;
-      hasSigned = true;
-      signPlaceholder.style.display = "none";
-      const { x, y } = getCoords(e);
-      ctx.beginPath();
-      ctx.moveTo(x, y);
-      e.preventDefault();
-    }
-
-    function draw(e) {
-      if (!isDrawing) return;
-      const { x, y } = getCoords(e);
-      ctx.lineWidth = 2.5;
-      ctx.lineCap = "round";
-      ctx.strokeStyle = "#1e293b";
-      ctx.lineTo(x, y);
-      ctx.stroke();
-      e.preventDefault();
-    }
-
-    function stopDraw() { isDrawing = false; }
-
-    canvas.addEventListener("mousedown", startDraw);
-    canvas.addEventListener("mousemove", draw);
-    window.addEventListener("mouseup", stopDraw);
-
-    canvas.addEventListener("touchstart", startDraw);
-    canvas.addEventListener("touchmove", draw);
-    window.addEventListener("touchend", stopDraw);
-
-    function clearSignature() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      hasSigned = false;
-      signPlaceholder.style.display = "flex";
-    }
-
-    // Image Compression Helper
+    let openTicketsData = [];
+    let activeTicket = null;
     let workPhotoBase64 = "";
-    let compPhotoBase64 = "";
     let lastGeneratedText = "";
+    let selectedVerifyType = "PIN";
 
+    // Setup Trades
+    window.addEventListener("load", () => {
+      const select = document.getElementById("raiseTrade");
+      select.innerHTML = TRADES_LIST.map(t => `<option value="${t}">${t}</option>`).join("");
+      loadOpenTickets();
+    });
+
+    // Tab Navigation
+    function switchTab(tabId) {
+      if (tabId === 'raiseTab') {
+        document.getElementById('raiseTab').classList.remove('hidden');
+        document.getElementById('techTab').classList.add('hidden');
+        document.getElementById('tabBtnRaise').className = 'flex-1 py-3 border-b-2 border-red-800 text-red-800 bg-white font-bold';
+        document.getElementById('tabBtnTech').className = 'flex-1 py-3 border-b-2 border-transparent text-slate-600 hover:text-slate-900 font-bold';
+      } else {
+        document.getElementById('raiseTab').classList.add('hidden');
+        document.getElementById('techTab').classList.remove('hidden');
+        document.getElementById('tabBtnTech').className = 'flex-1 py-3 border-b-2 border-red-800 text-red-800 bg-white font-bold';
+        document.getElementById('tabBtnRaise').className = 'flex-1 py-3 border-b-2 border-transparent text-slate-600 hover:text-slate-900 font-bold';
+        loadOpenTickets();
+      }
+    }
+
+    // 1. Submit New Complaint
+    document.getElementById("raiseForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById("raiseSubmitBtn");
+      btn.disabled = true;
+      btn.innerText = "Registering Complaint...";
+
+      const ticketId = "TKT-" + Math.floor(100000 + Math.random() * 900000);
+      const secretPin = Math.floor(1000 + Math.random() * 9000).toString();
+
+      const payload = {
+        action: "raiseComplaint",
+        ticketId: ticketId,
+        trade: document.getElementById("raiseTrade").value,
+        location: document.getElementById("raiseLocation").value,
+        problem: document.getElementById("raiseProblem").value,
+        compName: document.getElementById("raiseCompName").value,
+        compEmpCode: document.getElementById("raiseCompEmpCode").value,
+        secretPin: secretPin
+      };
+
+      try {
+        await fetch(SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        document.getElementById("displaySecretPin").innerText = secretPin;
+        document.getElementById("displayTicketId").innerText = "Ticket ID: " + ticketId;
+        document.getElementById("createdModal").classList.remove("hidden");
+        document.getElementById("raiseForm").reset();
+      } catch (err) {
+        alert("Error saving: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "🚀 Submit Complaint & Generate PIN";
+      }
+    });
+
+    function closeCreatedModal() {
+      document.getElementById("createdModal").classList.add("hidden");
+      switchTab('techTab');
+    }
+
+    // 2. Load Open Complaints
+    async function loadOpenTickets() {
+      const container = document.getElementById("ticketsList");
+      container.innerHTML = `<div class="text-center py-6 text-xs text-slate-400">Fetching live complaints...</div>`;
+
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=getOpenTickets`);
+        openTicketsData = await res.json();
+        document.getElementById("openCountBadge").innerText = openTicketsData.length;
+
+        if (openTicketsData.length === 0) {
+          container.innerHTML = `<div class="text-center py-8 text-xs text-emerald-600 font-bold">🎉 No pending complaints! All campus repairs cleared.</div>`;
+          return;
+        }
+
+        container.innerHTML = openTicketsData.map((t, idx) => `
+          <div class="bg-white border rounded-lg p-3 shadow-sm hover:border-slate-400 transition flex justify-between items-center">
+            <div class="space-y-0.5">
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] font-bold px-1.5 py-0.5 bg-red-100 text-red-800 rounded">${t.trade}</span>
+                <span class="text-xs font-mono font-bold text-slate-800">${t.ticketId}</span>
+              </div>
+              <p class="text-xs font-bold text-slate-800 mt-1">${t.location}</p>
+              <p class="text-[11px] text-slate-500">${t.problem}</p>
+              <p class="text-[10px] text-slate-400">By: ${t.compName} (${t.compEmpCode})</p>
+            </div>
+            <button type="button" onclick="attendTicket(${idx})" class="bg-red-800 hover:bg-red-900 text-white font-bold px-3 py-1.5 rounded text-xs">
+              Attend &rarr;
+            </button>
+          </div>
+        `).join("");
+
+      } catch (err) {
+        container.innerHTML = `<div class="text-center py-4 text-xs text-red-500">Error fetching data. Check connection.</div>`;
+      }
+    }
+
+    // 3. Attend Specific Ticket
+    function attendTicket(idx) {
+      activeTicket = openTicketsData[idx];
+      document.getElementById("attTicketId").innerText = activeTicket.ticketId;
+      document.getElementById("attLocation").innerText = activeTicket.location;
+      document.getElementById("attProblem").innerText = activeTicket.problem;
+      document.getElementById("attComplainant").innerText = `${activeTicket.compName} (${activeTicket.compEmpCode})`;
+
+      document.getElementById("openTicketsView").classList.add("hidden");
+      document.getElementById("attendView").classList.remove("hidden");
+      setNowTimes();
+      selectVerifyMethod("PIN");
+    }
+
+    function cancelAttend() {
+      activeTicket = null;
+      document.getElementById("openTicketsView").classList.remove("hidden");
+      document.getElementById("attendView").classList.add("hidden");
+    }
+
+    // Material Row
+    function addMaterialRow() {
+      const row = document.createElement("div");
+      row.className = "flex gap-2 material-row";
+      row.innerHTML = `
+        <input type="text" placeholder="Item name / spec" class="w-2/3 p-1 border rounded text-xs mat-name">
+        <input type="text" placeholder="Qty" class="w-1/3 p-1 border rounded text-xs mat-qty">
+      `;
+      document.getElementById("materialList").appendChild(row);
+    }
+
+    function setNowTimes() {
+      const now = new Date();
+      const formatted = now.toTimeString().substring(0, 5);
+      if (!document.getElementById("timeIn").value) document.getElementById("timeIn").value = formatted;
+      document.getElementById("timeOut").value = formatted;
+    }
+
+    // Image Compression
     function compressAndRead(file, callback) {
       const reader = new FileReader();
       reader.onload = function(e) {
@@ -396,75 +432,49 @@
       }
     });
 
-    document.getElementById("compPhotoInput").addEventListener("change", function(e) {
-      if (e.target.files[0]) {
-        compressAndRead(e.target.files[0], function(base64) {
-          compPhotoBase64 = base64;
-          document.getElementById("compPhotoPreview").innerHTML = `<img src="${base64}" class="w-full h-full object-cover">`;
+    // Verification Switch (PIN vs QR)
+    function selectVerifyMethod(method) {
+      selectedVerifyType = method;
+      if (method === "PIN") {
+        document.getElementById("pinBox").classList.remove("hidden");
+        document.getElementById("qrBox").classList.add("hidden");
+        document.getElementById("btnMethodPIN").className = "py-2 text-xs font-bold rounded-lg border bg-red-800 text-white";
+        document.getElementById("btnMethodQR").className = "py-2 text-xs font-bold rounded-lg border bg-white text-slate-700";
+      } else {
+        document.getElementById("pinBox").classList.add("hidden");
+        document.getElementById("qrBox").classList.remove("hidden");
+        document.getElementById("btnMethodQR").className = "py-2 text-xs font-bold rounded-lg border bg-red-800 text-white";
+        document.getElementById("btnMethodPIN").className = "py-2 text-xs font-bold rounded-lg border bg-white text-slate-700";
+
+        // Generate dynamic QR code
+        const qrContainer = document.getElementById("qrcodeCanvas");
+        qrContainer.innerHTML = "";
+        const approveUrl = `${SCRIPT_URL}?action=qrApprove&ticketId=${activeTicket.ticketId}`;
+        new QRCode(qrContainer, {
+          text: approveUrl,
+          width: 140,
+          height: 140
         });
       }
-    });
-
-    function addMaterialRow() {
-      const row = document.createElement("div");
-      row.className = "flex gap-2 material-row";
-      row.innerHTML = `
-        <input type="text" placeholder="Item name / spec" class="w-2/3 p-1.5 border rounded text-xs mat-name">
-        <input type="text" placeholder="Qty" class="w-1/3 p-1.5 border rounded text-xs mat-qty">
-      `;
-      document.getElementById("materialList").appendChild(row);
     }
 
-    function setNowTimes() {
-      const now = new Date();
-      const formatted = now.toTimeString().substring(0, 5);
-      if (!document.getElementById("timeIn").value) document.getElementById("timeIn").value = formatted;
-      document.getElementById("timeOut").value = formatted;
-    }
+    // 4. Submit & Close Ticket
+    async function submitCloseTicket(method) {
+      if (!activeTicket) return;
 
-    function closeModalAndReset() {
-      window.location.reload();
-    }
-
-    // WhatsApp Share with Image + Text
-    async function shareToWhatsApp() {
-      if (workPhotoBase64 && navigator.share && navigator.canShare) {
-        try {
-          const res = await fetch(workPhotoBase64);
-          const blob = await res.blob();
-          const file = new File([blob], `${slipId}_work.jpg`, { type: "image/jpeg" });
-
-          if (navigator.canShare({ files: [file] })) {
-            await navigator.share({
-              title: "CGC Maintenance Clearance Slip",
-              text: lastGeneratedText,
-              files: [file]
-            });
-            return;
-          }
-        } catch (err) {
-          console.log("Web Share cancelled/failed:", err);
+      let enteredPin = "";
+      if (method === "PIN") {
+        enteredPin = document.getElementById("enteredPin").value.trim();
+        if (enteredPin.length !== 4) {
+          alert("Please enter complainant's 4-digit secret PIN.");
+          return;
+        }
+        if (enteredPin !== String(activeTicket.pin)) {
+          alert("❌ Invalid Secret PIN! Complainant se unka phone check karwa kar sahi PIN enter karein.");
+          return;
         }
       }
 
-      // Fallback to regular text WhatsApp
-      window.open(`https://wa.me/?text=${encodeURIComponent(lastGeneratedText)}`, "_blank");
-    }
-
-    // Form Submission
-    document.getElementById("slipForm").addEventListener("submit", async function(e) {
-      e.preventDefault();
-
-      if (!hasSigned) {
-        alert("Please obtain the complainant's signature before submitting.");
-        return;
-      }
-
-      const submitBtn = document.getElementById("submitBtn");
-      submitBtn.disabled = true;
-      submitBtn.innerText = "Uploading Photos & Slip...";
-
-      // Duration
       const tIn = document.getElementById("timeIn").value;
       const tOut = document.getElementById("timeOut").value;
       let durationStr = "N/A";
@@ -476,7 +486,6 @@
         durationStr = `${Math.floor(diff / 60)}h ${diff % 60}m`;
       }
 
-      // Materials
       const matNames = document.querySelectorAll(".mat-name");
       const matQtys = document.querySelectorAll(".mat-qty");
       let materialsArr = [];
@@ -487,22 +496,18 @@
       });
 
       const payload = {
-        slipId: slipId,
-        trade: document.getElementById("trade").value,
+        action: "closeTicket",
+        ticketId: activeTicket.ticketId,
         techName: document.getElementById("techName").value,
         techEmpCode: document.getElementById("techEmpCode").value,
-        compName: document.getElementById("compName").value,
-        compEmpCode: document.getElementById("compEmpCode").value,
-        location: document.getElementById("location").value,
-        problem: document.getElementById("problem").value,
-        workDone: document.getElementById("workDone").value,
         timeIn: tIn,
         timeOut: tOut,
         duration: durationStr,
+        workDone: document.getElementById("workDone").value || "Job Completed",
         materials: materialsArr.join(", ") || "None",
-        signature: canvas.toDataURL("image/png"),
         workPhoto: workPhotoBase64,
-        compPhoto: compPhotoBase64
+        verifyMethod: method,
+        enteredPin: enteredPin
       };
 
       try {
@@ -513,38 +518,62 @@
           body: JSON.stringify(payload)
         });
 
-        // Formatted Slip with Sandeep Singh Branding
+        // WhatsApp Slip
         lastGeneratedText = 
-`*🏛️ CGC MAINTENANCE INTIMATION SLIP*
+`*🏛️ CGC MAINTENANCE CLEARANCE SLIP*
 ━━━━━━━━━━━━━━━━━━━
-*Slip ID:* ${payload.slipId}
-*Date:* ${document.getElementById("currentDate").innerText}
-*Trade:* ${payload.trade}
+*Ticket ID:* ${payload.ticketId}
+*Trade:* ${activeTicket.trade}
+*Status:* ✅ VERIFIED & CLOSED
 
-*📍 Location:* ${payload.location}
+*📍 Location:* ${activeTicket.location}
 *🔧 Attending Staff:* ${payload.techName} (${payload.techEmpCode})
-*👤 Verified By:* ${payload.compName} (${payload.compEmpCode})
+*👤 Verified By:* ${activeTicket.compName} (${activeTicket.compEmpCode})
 
-*⚠️ Problem:* ${payload.problem}
+*⚠️ Problem:* ${activeTicket.problem}
 *🛠️ Work Done:* ${payload.workDone}
 *📦 Material Used:* ${payload.materials}
 *⏱️ Duration:* ${payload.duration} (${payload.timeIn} - ${payload.timeOut})
+*🔐 Clearance Method:* ${method === 'PIN' ? 'Secret PIN Verified' : 'QR Scan Approved'}
 ━━━━━━━━━━━━━━━━━━━
-✅ _Job Completed & Digitally Verified_
 ⚡ _System by Sandeep Singh (Emp Code: J-5383)_`;
 
         document.getElementById("slipReceiptPreview").innerText = lastGeneratedText;
         document.getElementById("shareModal").classList.remove("hidden");
 
-        submitBtn.disabled = false;
-        submitBtn.innerText = "Submit Digital Intimation Slip";
-
       } catch (err) {
         alert("Error saving: " + err.message);
-        submitBtn.disabled = false;
-        submitBtn.innerText = "Submit Digital Intimation Slip";
       }
-    });
+    }
+
+    function closeShareModal() {
+      document.getElementById("shareModal").classList.add("hidden");
+      cancelAttend();
+      loadOpenTickets();
+    }
+
+    // WhatsApp Native Share
+    async function shareToWhatsApp() {
+      if (workPhotoBase64 && navigator.share && navigator.canShare) {
+        try {
+          const res = await fetch(workPhotoBase64);
+          const blob = await res.blob();
+          const file = new File([blob], `${activeTicket.ticketId}_work.jpg`, { type: "image/jpeg" });
+
+          if (navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              title: "CGC Maintenance Clearance",
+              text: lastGeneratedText,
+              files: [file]
+            });
+            return;
+          }
+        } catch (err) {
+          console.log("Web Share fail:", err);
+        }
+      }
+      window.open(`https://wa.me/?text=${encodeURIComponent(lastGeneratedText)}`, "_blank");
+    }
   </script>
 </body>
 </html>
