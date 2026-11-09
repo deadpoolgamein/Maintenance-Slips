@@ -8,49 +8,53 @@
 </head>
 <body class="bg-slate-100 text-slate-800 p-3 sm:p-6 font-sans min-h-screen flex flex-col justify-between">
 
-  <div class="max-w-xl mx-auto w-full bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden relative">
+  <div class="max-w-xl mx-auto w-full bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden relative mb-4">
     
     <!-- Header with CGC Logo & Branding -->
-<div class="bg-red-800 text-white p-3.5 sm:p-4 text-center relative shadow-sm">
-  <div class="flex items-center justify-center gap-3 mb-1">
-    <!-- CGC Logo -->
-    <div class="bg-white p-1 rounded-lg shadow-sm flex items-center justify-center w-12 h-12 shrink-0">
-      <img src="cgc-logo.png" alt="CGC Logo" class="max-w-full max-h-full object-contain">
+    <div class="bg-red-800 text-white p-3.5 sm:p-4 text-center relative shadow-sm">
+      <div class="flex items-center justify-center gap-3 mb-1">
+        <!-- CGC Logo -->
+        <div class="bg-white p-1 rounded-lg shadow-sm flex items-center justify-center w-12 h-12 shrink-0">
+          <img src="cgc-logo.png" alt="CGC Logo" class="max-w-full max-h-full object-contain" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/en/thumb/6/60/Chandigarh_Group_of_Colleges_logo.png/220px-Chandigarh_Group_of_Colleges_logo.png'">
+        </div>
+        <!-- Title -->
+        <div class="text-left">
+          <h1 class="text-lg sm:text-xl font-bold tracking-wide leading-tight">CGC CAMPUS MAINTENANCE</h1>
+          <p class="text-[10px] sm:text-xs text-red-200 uppercase tracking-wider">Complaint Registration Desk</p>
+        </div>
+      </div>
+      
+      <!-- Developer Tag -->
+      <div class="mt-2 inline-block bg-red-950/70 border border-red-700/80 rounded-full px-3 py-0.5">
+        <p class="text-[11px] text-red-100 font-medium">System by: <span class="font-bold text-white">Sandeep Singh</span> (Emp Code: <span class="text-amber-300 font-mono font-bold">J-5383</span>)</p>
+      </div>
     </div>
-    <!-- Title -->
-    <div class="text-left">
-      <h1 class="text-lg sm:text-xl font-bold tracking-wide leading-tight">CGC CAMPUS MAINTENANCE</h1>
-      <p class="text-[10px] sm:text-xs text-red-200 uppercase tracking-wider">Complaint Registration Desk</p>
-    </div>
-  </div>
 
-  <!-- Developer Tag -->
-  <div class="mt-2 inline-block bg-red-950/70 border border-red-700/80 rounded-full px-3 py-0.5">
-    <p class="text-[11px] text-red-100 font-medium">System by: <span class="font-bold text-white">Sandeep Singh</span> (Emp Code: <span class="text-amber-300 font-mono font-bold">J-5383</span>)</p>
-  </div>
-</div>
+    <div class="p-4 sm:p-6 space-y-4">
 
-    <!-- Active Ticket & Saved PIN Card -->
-      <div id="activeTicketCard" class="hidden bg-emerald-50 border border-emerald-200 p-3.5 rounded-lg space-y-2 shadow-sm">
+      <!-- Active Ticket & Saved PIN Card (Persists in LocalStorage) -->
+      <div id="activeTicketCard" class="hidden bg-emerald-50 border border-emerald-300 p-3.5 rounded-lg space-y-2 shadow-sm">
         <div class="flex justify-between items-center">
-          <span class="text-[10px] font-bold px-2 py-0.5 bg-emerald-600 text-white rounded-full uppercase tracking-wider">Active Complaint</span>
-          <button type="button" onclick="checkTicketStatus()" class="text-[11px] font-bold text-emerald-700 hover:underline">🔄 Check Live Status</button>
+          <span class="text-[10px] font-bold px-2 py-0.5 bg-emerald-700 text-white rounded-full uppercase tracking-wider">Your Active Complaint</span>
+          <button type="button" onclick="checkTicketStatus()" class="text-xs font-bold text-emerald-800 hover:text-emerald-950 flex items-center gap-1">
+            🔄 Check Status
+          </button>
         </div>
-        <div class="flex justify-between items-center pt-1 border-t border-emerald-200/60">
+
+        <div class="flex justify-between items-center pt-1 border-t border-emerald-200/80">
           <div>
-            <div class="text-xs text-slate-500">Ticket ID: <strong id="savedTicketId" class="text-slate-800 font-mono"></strong></div>
+            <div class="text-xs text-slate-600">Ticket ID: <strong id="savedTicketId" class="text-slate-900 font-mono"></strong></div>
             <div class="text-[11px] text-slate-500 mt-0.5" id="savedLocation"></div>
+            <div class="text-[11px] text-emerald-800 font-semibold mt-1">Status: <span id="savedTicketStatus">OPEN</span></div>
           </div>
-          <div class="text-right bg-white px-3 py-1.5 rounded-lg border border-emerald-200 shadow-sm">
-            <span class="text-[10px] text-amber-800 font-bold block uppercase">Secret Closure PIN</span>
-            <span id="savedPinDisplay" class="text-lg font-mono font-extrabold text-amber-900 tracking-wider"></span>
+          <div class="text-right bg-white px-3 py-1.5 rounded-lg border border-emerald-300 shadow-sm">
+            <span class="text-[10px] text-amber-800 font-bold block uppercase tracking-wider">Closure PIN</span>
+            <span id="savedPinDisplay" class="text-xl font-mono font-extrabold text-amber-900 tracking-wider"></span>
           </div>
         </div>
-        <div id="statusNotice" class="text-[11px] text-emerald-800 font-medium">Status: <strong id="savedTicketStatus">OPEN (Pending Attending)</strong></div>
       </div>
 
-    <!-- Info Box -->
-    <div class="p-4 sm:p-6 space-y-4">
+      <!-- Info Box -->
       <div class="bg-amber-50 border border-amber-200 p-3 rounded-lg text-xs text-amber-900 leading-relaxed">
         <strong>Important:</strong> Complaint submit karne par aapko ek <strong>Secret 4-Digit Clearance PIN</strong> milega. Technician jab aapka kaam check karke theek kar dega, tabhi ye PIN unhe dekar complaint officially close karwayein.
       </div>
@@ -102,7 +106,7 @@
       <div class="bg-white rounded-xl max-w-sm w-full p-5 shadow-2xl text-center space-y-3">
         <div class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto text-xl font-bold">✓</div>
         <h3 class="text-base font-bold text-slate-800">Complaint Registered!</h3>
-        <p class="text-xs text-slate-500">Aapka secret clearance PIN niche diya gaya hai. Kaam pura hone par technician ko ye PIN share karein:</p>
+        <p class="text-xs text-slate-500">Aapka secret clearance PIN save ho gaya hai. Kaam complete hone par technician ko ye PIN dein:</p>
         
         <div class="bg-amber-50 border-2 border-dashed border-amber-300 p-3 rounded-lg">
           <div class="text-[11px] text-amber-700 font-bold uppercase tracking-wider">Secret Closure PIN</div>
@@ -110,8 +114,10 @@
           <div id="displayTicketId" class="text-[11px] text-slate-500 font-mono mt-1"></div>
         </div>
 
+        <p class="text-[11px] text-slate-400">Yeh PIN aapke page par hamesha dikhta rahega jab tak complaint close nahi hoti.</p>
+
         <button type="button" onclick="closeCreatedModal()" class="w-full py-2.5 bg-red-800 hover:bg-red-900 text-white font-bold rounded-lg text-xs">
-          Noted & Done
+          Noted & Continue
         </button>
       </div>
     </div>
@@ -123,8 +129,27 @@
   </footer>
 
   <script>
+    // Paste your deployed Google Apps Script Web App URL here
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbydJmGVtwoUK_MDc1rIywIoUi82Or7K4dost6jsqPw8YKDSlpg4Jdqdbd8R2tiw7vIx/exec";
 
+    // Page Load hote hi check karega agar koi saved ticket hai
+    window.addEventListener("load", displaySavedTicket);
+
+    function displaySavedTicket() {
+      const savedData = localStorage.getItem("cgc_active_complaint");
+      if (savedData) {
+        const ticket = JSON.parse(savedData);
+        document.getElementById("savedTicketId").innerText = ticket.ticketId;
+        document.getElementById("savedLocation").innerText = ticket.location;
+        document.getElementById("savedPinDisplay").innerText = ticket.pin;
+        document.getElementById("savedTicketStatus").innerText = ticket.status || "OPEN (Pending Attending)";
+        document.getElementById("activeTicketCard").classList.remove("hidden");
+      } else {
+        document.getElementById("activeTicketCard").classList.add("hidden");
+      }
+    }
+
+    // Submit Handler
     document.getElementById("raiseForm").addEventListener("submit", async function(e) {
       e.preventDefault();
       const btn = document.getElementById("raiseSubmitBtn");
@@ -133,12 +158,13 @@
 
       const ticketId = "TKT-" + Math.floor(100000 + Math.random() * 900000);
       const secretPin = Math.floor(1000 + Math.random() * 9000).toString();
+      const location = document.getElementById("raiseLocation").value;
 
       const payload = {
         action: "raiseComplaint",
         ticketId: ticketId,
         trade: document.getElementById("raiseTrade").value,
-        location: document.getElementById("raiseLocation").value,
+        location: location,
         problem: document.getElementById("raiseProblem").value,
         compName: document.getElementById("raiseCompName").value,
         compEmpCode: document.getElementById("raiseCompEmpCode").value,
@@ -153,10 +179,21 @@
           body: JSON.stringify(payload)
         });
 
+        // Phone ke browser me ticket aur PIN permanently save ho gaya
+        localStorage.setItem("cgc_active_complaint", JSON.stringify({
+          ticketId: ticketId,
+          pin: secretPin,
+          location: location,
+          status: "OPEN (Pending Attending)"
+        }));
+
         document.getElementById("displaySecretPin").innerText = secretPin;
         document.getElementById("displayTicketId").innerText = "Ticket ID: " + ticketId;
         document.getElementById("createdModal").classList.remove("hidden");
         document.getElementById("raiseForm").reset();
+
+        displaySavedTicket();
+
       } catch (err) {
         alert("Error saving: " + err.message);
       } finally {
@@ -167,6 +204,33 @@
 
     function closeCreatedModal() {
       document.getElementById("createdModal").classList.add("hidden");
+    }
+
+    // Live Status Check
+    async function checkTicketStatus() {
+      const savedData = localStorage.getItem("cgc_active_complaint");
+      if (!savedData) return;
+      const ticket = JSON.parse(savedData);
+
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=getOpenTickets`);
+        const openList = await res.json();
+        
+        // Agar open tickets me ye ID nahi hai, matlab resolve ho kar close ho chuki hai
+        const stillOpen = openList.some(t => t.ticketId === ticket.ticketId);
+        
+        if (!stillOpen) {
+          document.getElementById("savedTicketStatus").innerHTML = "<span class='text-green-700 font-bold'>✅ CLOSED & VERIFIED</span>";
+          if (confirm("Ye complaint technician dwara verify aur close kar di gayi hai! Kya is card ko clear karna chahte hain?")) {
+            localStorage.removeItem("cgc_active_complaint");
+            displaySavedTicket();
+          }
+        } else {
+          alert("Ticket " + ticket.ticketId + " abhi OPEN hai. Technician attending pending.");
+        }
+      } catch (err) {
+        alert("Status check failed. Please check internet connection.");
+      }
     }
   </script>
 </body>
