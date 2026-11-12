@@ -6,14 +6,9 @@
   <title>CGC University Maintenance Slip System</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Print Styling: Only prints the exact CGC Slip */
     @media print {
-      body * {
-        visibility: hidden;
-      }
-      #printableSlipArea, #printableSlipArea * {
-        visibility: visible;
-      }
+      body * { visibility: hidden; }
+      #printableSlipArea, #printableSlipArea * { visibility: visible; }
       #printableSlipArea {
         position: fixed;
         left: 0;
@@ -21,11 +16,8 @@
         width: 100%;
         padding: 10px;
         background: white !important;
-        box-shadow: none !important;
       }
-      .no-print {
-        display: none !important;
-      }
+      .no-print { display: none !important; }
       input, textarea {
         border: none !important;
         background: transparent !important;
@@ -70,13 +62,6 @@
       <!-- ================= 1. TECHNICIAN & SLIPS DESK ================= -->
       <div id="techView" class="space-y-4">
         
-        <div class="flex justify-between items-center bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg">
-          <span class="text-[11px] text-slate-500 font-medium">Live Public Record:</span>
-          <a id="techPublicSheetBtn" href="#" target="_blank" class="text-xs font-bold text-red-800 hover:underline flex items-center gap-1">
-            📊 View Public Sheet &nearr;
-          </a>
-        </div>
-
         <!-- Department Selector -->
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">Select Department / Domain</label>
@@ -118,14 +103,13 @@
             <div><strong>Machine/Code:</strong> <span id="activeMachine"></span></div>
             <div><strong>Location:</strong> <span id="activeLocation"></span></div>
             <div><strong>Problem:</strong> <span id="activeProblem"></span></div>
-            <div><strong>Intimated:</strong> <span id="activeLoggedBy"></span> (<span id="activeIntTime"></span>)</div>
+            <div><strong>Logged By:</strong> <span id="activeLoggedBy"></span></div>
           </div>
 
           <form id="resolveForm" class="space-y-3">
             <div>
               <label class="block text-xs font-bold text-slate-700 mb-1">Complaint Attended By (Name & Emp Code) *</label>
               <input type="text" id="attendedByInput" value="Sandeep J-5383" required placeholder="e.g. Tejinder - J-5472, Sandeep J-5383" class="w-full p-2 border rounded-lg bg-amber-50/40 text-xs font-medium">
-              <p class="text-[10px] text-slate-400 mt-0.5">Ek se zyada technician ho to comma laga kar likhein</p>
             </div>
 
             <div>
@@ -138,9 +122,16 @@
               <input type="text" id="materials" placeholder="Jo samaan use hua likhein ya 'None'..." class="w-full p-2 border rounded-lg text-xs">
             </div>
 
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">Complaint Close Date & Time *</label>
-              <input type="text" id="closeDateTimeInput" required class="w-full p-2 border rounded-lg text-xs font-mono">
+            <!-- Technician Fills Start Time & Close Date/Time -->
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Work Start Time *</label>
+                <input type="text" id="workStartTimeInput" required placeholder="e.g. 10:15 AM" class="w-full p-2 border rounded-lg text-xs font-mono">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Close Date & Time *</label>
+                <input type="text" id="closeDateTimeInput" required placeholder="e.g. 12/11/26 11:30 AM" class="w-full p-2 border rounded-lg text-xs font-mono">
+              </div>
             </div>
 
             <!-- Multi-Photo (Up to 6) -->
@@ -183,35 +174,51 @@
             <button type="button" onclick="logoutAdmin()" class="text-red-700 font-bold hover:underline">Logout</button>
           </div>
 
-          <!-- Quick Links -->
+          <!-- Quick Access Links (Public Sheet & Drive for All Admins; Master Sheet & Drive for Super Admin) -->
           <div class="border rounded-xl p-3 bg-slate-50 border-slate-300 space-y-2">
-            <h4 class="text-[11px] font-bold uppercase tracking-wider text-slate-600">Direct Database & Media Links</h4>
+            <h4 class="text-[11px] font-bold uppercase tracking-wider text-slate-600">Database & Photo Evidence Links</h4>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+              
+              <!-- Public Sheet (All Admins/Heads) -->
               <a id="adminPublicSheetBtn" href="#" target="_blank" class="p-2.5 bg-white border rounded-lg flex items-center justify-between hover:border-slate-400 shadow-sm">
                 <div>
                   <strong class="text-slate-800 block">📊 Public Live Sheet</strong>
-                  <span class="text-[10px] text-slate-400">Read-only status</span>
+                  <span class="text-[10px] text-slate-400">View-only status & logs</span>
                 </div>
                 <span class="text-slate-400">&nearr;</span>
               </a>
+
+              <!-- Public Drive Folder (All Admins/Heads) -->
+              <a id="adminPublicDriveBtn" href="#" target="_blank" class="p-2.5 bg-white border rounded-lg flex items-center justify-between hover:border-slate-400 shadow-sm">
+                <div>
+                  <strong class="text-slate-800 block">🖼️ Public Photo Drive</strong>
+                  <span class="text-[10px] text-slate-400">View-only work photos</span>
+                </div>
+                <span class="text-slate-400">&nearr;</span>
+              </a>
+
+              <!-- Master Edit Sheet (Super Admin Only) -->
               <a id="masterSheetBtn" href="#" target="_blank" class="hidden p-2.5 bg-emerald-50 border border-emerald-300 rounded-lg flex items-center justify-between hover:border-emerald-500 shadow-sm">
                 <div>
                   <strong class="text-emerald-900 block">🔐 Master Sheet (Edit)</strong>
-                  <span class="text-[10px] text-emerald-700">Full control & PINs</span>
+                  <span class="text-[10px] text-emerald-700">Full control, tabs & PINs</span>
                 </div>
                 <span class="text-emerald-600">&nearr;</span>
               </a>
+
+              <!-- Master Drive Folder (Super Admin Only) -->
               <a id="masterDriveBtn" href="#" target="_blank" class="hidden p-2.5 bg-blue-50 border border-blue-300 rounded-lg flex items-center justify-between hover:border-blue-500 shadow-sm">
                 <div>
-                  <strong class="text-blue-900 block">📁 Master Google Drive</strong>
-                  <span class="text-[10px] text-blue-700">All uploaded photos</span>
+                  <strong class="text-blue-900 block">📁 Master Drive (Full)</strong>
+                  <span class="text-[10px] text-blue-700">Manage all uploaded media</span>
                 </div>
                 <span class="text-blue-600">&nearr;</span>
               </a>
+
             </div>
           </div>
 
-          <!-- Log Official Complaint (Matches Physical Slip Fields) -->
+          <!-- Log Official Complaint (Without Intimated Time) -->
           <div class="border rounded-xl p-4 bg-slate-50 space-y-3 border-slate-300 shadow-sm">
             <h3 class="text-xs font-bold uppercase tracking-wider text-red-800 flex items-center gap-1.5">
               <span>➕</span> Register Official Complaint Slip
@@ -243,11 +250,6 @@
               <div>
                 <label class="block text-xs font-semibold text-slate-600 mb-1">Description of Problem *</label>
                 <textarea id="newProblem" rows="2" required placeholder="e.g. Need new stair railing outside of Axis Bank" class="w-full p-2 border text-xs rounded bg-white"></textarea>
-              </div>
-
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Intimated Time *</label>
-                <input type="text" id="newIntimatedTime" required placeholder="e.g. 4:30 PM" class="w-full p-2 border text-xs rounded bg-white">
               </div>
 
               <button type="submit" id="logComplaintBtn" class="w-full py-2.5 bg-red-800 hover:bg-red-900 text-white font-bold rounded-lg text-xs shadow">
@@ -311,7 +313,6 @@
             
             <!-- Top Row: CGC Logo + BIS NO / DATE / DOMAIN -->
             <div class="grid grid-cols-12 border-b-2 border-black">
-              <!-- Logo & University Name -->
               <div class="col-span-7 p-2.5 flex items-center gap-3 border-r-2 border-black">
                 <img src="cgc-logo.png" alt="CGC" class="w-12 h-12 object-contain" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/en/thumb/6/60/Chandigarh_Group_of_Colleges_logo.png/220px-Chandigarh_Group_of_Colleges_logo.png'">
                 <div>
@@ -321,7 +322,6 @@
                 </div>
               </div>
               
-              <!-- BIS NO, DATE, DOMAIN -->
               <div class="col-span-5 text-xs font-sans flex flex-col justify-between">
                 <div class="border-b border-black px-2 py-1 flex items-center">
                   <span class="font-bold mr-1 whitespace-nowrap">BIS NO.</span>
@@ -356,15 +356,15 @@
               <textarea id="slipProblem" rows="3" class="w-full text-sm font-medium leading-snug focus:bg-yellow-50"></textarea>
             </div>
 
-            <!-- Row 4: INTIMATED BY/SIGN & INTIMATED TIME -->
+            <!-- Row 4: INTIMATED BY/SIGN & START TIME (Technician Filled) -->
             <div class="grid grid-cols-12 border-b-2 border-black text-xs font-sans">
               <div class="col-span-7 p-2 border-r-2 border-black">
                 <div class="font-bold mb-3">INTIMATED BY/SIGN</div>
                 <input type="text" id="slipIntimatedBy" class="w-full text-xs text-slate-700 focus:bg-yellow-50">
               </div>
               <div class="col-span-5 p-2 flex flex-col justify-between">
-                <div class="font-bold">INTIMATED TIME:</div>
-                <input type="text" id="slipIntimatedTime" class="w-full font-bold text-sm mt-2 focus:bg-yellow-50">
+                <div class="font-bold">START / ATTENDED TIME:</div>
+                <input type="text" id="slipStartTime" class="w-full font-bold text-sm mt-2 focus:bg-yellow-50">
               </div>
             </div>
 
@@ -389,7 +389,7 @@
           </div>
         </div>
 
-        <!-- Action Buttons (Not Printed) -->
+        <!-- Action Buttons -->
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-2 no-print">
           <button type="button" onclick="window.print()" class="py-2.5 bg-slate-900 hover:bg-black text-white font-bold rounded-lg text-xs flex items-center justify-center gap-1.5 shadow">
             <span>🖨️ Print Slip</span>
@@ -414,9 +414,10 @@
   <script>
     // ================= CONFIGURATION =================
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbydJmGVtwoUK_MDc1rIywIoUi82Or7K4dost6jsqPw8YKDSlpg4Jdqdbd8R2tiw7vIx/exec";
-    const SUPER_ADMIN_PIN = "9300";
+    const SUPER_ADMIN_PIN = "8556";
 
     const PUBLIC_SHEET_URL = "https://docs.google.com/spreadsheets/d/1swg4bktSwIcZwTJmuBu26xlPiJwlHCA8I0-h7St_g0Q/edit?usp=sharing";
+    const PUBLIC_DRIVE_URL = "https://drive.google.com/drive/folders/1yB3HJv3JQ4bCWUjMbfqMStkfJG-LC_Hn";
     const MASTER_SHEET_URL = "https://docs.google.com/spreadsheets/d/1aQB_L-j4G_tgsf1SmOT3zwxrWJO1VIsu3wc8ktsWYpU/edit?usp=sharing";
     const MASTER_DRIVE_URL = "https://drive.google.com/drive/folders/12yk3fbg85KX9TAC4NLD_XHPd5ojGqRmI";
     // =================================================
@@ -429,18 +430,12 @@
     let workPhotos = [];
 
     window.addEventListener("load", () => {
-      document.getElementById("techPublicSheetBtn").href = PUBLIC_SHEET_URL;
       document.getElementById("adminPublicSheetBtn").href = PUBLIC_SHEET_URL;
+      document.getElementById("adminPublicDriveBtn").href = PUBLIC_DRIVE_URL;
       document.getElementById("masterSheetBtn").href = MASTER_SHEET_URL;
       document.getElementById("masterDriveBtn").href = MASTER_DRIVE_URL;
-      setDefaultAdminTime();
       loadInitialData();
     });
-
-    function setDefaultAdminTime() {
-      const now = new Date();
-      document.getElementById("newIntimatedTime").value = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    }
 
     async function loadInitialData() {
       await fetchDepartments();
@@ -485,8 +480,25 @@
         document.getElementById("techDeptFilter").innerHTML = options;
         document.getElementById("newComplaintDept").innerHTML = options;
         document.getElementById("headDeptSelect").innerHTML = options;
-        document.getElementById("deptsListBadge").innerHTML = departments.map(d => `<span class="px-2.5 py-1 bg-slate-100 border text-slate-700 rounded-md text-xs font-semibold">📁 Dept_${d}</span>`).join("");
-      } catch (e) {}
+        document.getElementById("deptsListBadge").innerHTML = departments.map(d => `
+          <span class="px-2.5 py-1 bg-slate-100 border text-slate-700 rounded-md text-xs font-semibold flex items-center gap-1.5">
+            📁 Dept_${d}
+            ${d !== "Mechanical" ? `<button type="button" onclick="deleteDepartment('${d}')" class="text-red-600 font-bold hover:text-red-900">&times;</button>` : ''}
+          </span>
+        `).join("");
+      } catch (e) {
+        console.error("Dept fetch failed:", e);
+      }
+    }
+
+    async function deleteDepartment(deptName) {
+      if (!confirm(`Delete domain "${deptName}"?`)) return;
+      await fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ action: "deleteDepartment", deptName: deptName })
+      });
+      await fetchDepartments();
     }
 
     async function fetchAdmins() {
@@ -594,25 +606,21 @@
           machineName: document.getElementById("newMachineName").value.trim(),
           location: document.getElementById("newLocation").value.trim(),
           problem: document.getElementById("newProblem").value.trim(),
-          intimatedTime: document.getElementById("newIntimatedTime").value.trim(),
           loggedBy: currentAuthUser.name
         })
       });
       alert("✅ Complaint added to Open Board!");
       document.getElementById("newComplaintForm").reset();
-      setDefaultAdminTime();
       fetchAllTasks();
       btn.disabled = false;
       btn.innerText = "Post Complaint to Open Board";
     });
 
     async function fetchAllTasks() {
-      const dept = document.getElementById("techDeptFilter").value;
-      if (!dept) return;
-
-      const openBox = document.getElementById("openTasksList");
+      const dept = document.getElementById("techDeptFilter").value || "Mechanical";
+      const openBox = document.getElementById("openTasksBox");
       const resBox = document.getElementById("resolvedTasksBox");
-      openBox.innerHTML = `<div class="text-center py-4 text-xs text-slate-400">Loading...</div>`;
+      openBox.innerHTML = `<div class="text-center py-4 text-xs text-slate-400">Loading tickets...</div>`;
 
       try {
         const res = await fetch(`${SCRIPT_URL}?action=getTasks&dept=${encodeURIComponent(dept)}`);
@@ -627,15 +635,15 @@
         if (pending.length === 0) {
           openBox.innerHTML = `<div class="text-center py-6 text-xs text-emerald-600 font-bold">🎉 No pending complaints!</div>`;
         } else {
-          openBox.innerHTML = pending.map(t => `
+          openBox.innerHTML = pending.map((t, idx) => `
             <div class="bg-white border rounded-lg p-3 shadow-sm flex justify-between items-center">
               <div class="space-y-0.5">
                 <span class="text-xs font-mono font-bold text-red-800">BIS: ${t.ticketId}</span>
                 <p class="text-xs font-bold text-slate-800">${t.machineName} <span class="text-slate-500 font-normal">(${t.location})</span></p>
                 <p class="text-[11px] text-slate-600">${t.problem}</p>
-                <p class="text-[10px] text-slate-400">Intimated: ${t.loggedBy} @ ${t.intimatedTime}</p>
+                <p class="text-[10px] text-slate-400">Logged By: ${t.loggedBy} (${t.date})</p>
               </div>
-              <button type="button" onclick='startAttending(${JSON.stringify(t).replace(/'/g, "&#39;")})' class="bg-red-800 hover:bg-red-900 text-white font-bold px-3 py-1.5 rounded text-xs shadow-sm">
+              <button type="button" onclick="startAttendingById('${t.ticketId}')" class="bg-red-800 hover:bg-red-900 text-white font-bold px-3 py-1.5 rounded text-xs shadow-sm">
                 Attend &rarr;
               </button>
             </div>
@@ -653,7 +661,7 @@
                 <p class="text-[11px] text-slate-600">${t.actionTaken}</p>
                 <p class="text-[10px] text-slate-500">By: ${t.techName}</p>
               </div>
-              <button type="button" onclick='openPrintableSlip(${JSON.stringify(t).replace(/'/g, "&#39;")})' class="bg-slate-800 hover:bg-black text-white font-bold px-3 py-1.5 rounded text-xs shadow-sm">
+              <button type="button" onclick="openSlipById('${t.ticketId}')" class="bg-slate-800 hover:bg-black text-white font-bold px-3 py-1.5 rounded text-xs shadow-sm">
                 🖨️ View / Print Slip
               </button>
             </div>
@@ -661,28 +669,37 @@
         }
 
       } catch (err) {
-        openBox.innerHTML = `<div class="text-center py-4 text-xs text-red-500">Failed to load data.</div>`;
+        openBox.innerHTML = `<div class="text-center py-4 text-xs text-red-500">Failed to load. Check Apps Script New Deployment!</div>`;
       }
     }
 
-    function startAttending(task) {
+    function startAttendingById(ticketId) {
+      const task = allDeptTasks.find(t => t.ticketId === ticketId && t.status === "PENDING");
+      if (!task) return;
       activeTask = task;
+
       document.getElementById("activeTktId").innerText = task.ticketId;
       document.getElementById("activeMachine").innerText = task.machineName;
       document.getElementById("activeLocation").innerText = task.location;
       document.getElementById("activeProblem").innerText = task.problem;
       document.getElementById("activeLoggedBy").innerText = task.loggedBy;
-      document.getElementById("activeIntTime").innerText = task.intimatedTime;
 
       const now = new Date();
       const dd = String(now.getDate()).padStart(2, '0');
       const mm = String(now.getMonth() + 1).padStart(2, '0');
       const yy = String(now.getFullYear()).slice(-2);
       const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      
+      document.getElementById("workStartTimeInput").value = timeStr;
       document.getElementById("closeDateTimeInput").value = `${dd}/${mm}/${yy} ${timeStr}`;
 
       document.getElementById("openTasksBox").classList.add("hidden");
       document.getElementById("attendBox").classList.remove("hidden");
+    }
+
+    function openSlipById(ticketId) {
+      const slipData = allDeptTasks.find(t => t.ticketId === ticketId);
+      if (slipData) openPrintableSlip(slipData);
     }
 
     function cancelAttend() {
@@ -744,6 +761,7 @@
       btn.disabled = true;
       btn.innerText = "Saving & Generating Slip...";
 
+      const startTime = document.getElementById("workStartTimeInput").value.trim();
       const attendedBy = document.getElementById("attendedByInput").value.trim();
       const actionTaken = document.getElementById("actionTaken").value.trim();
       const closeDateTime = document.getElementById("closeDateTimeInput").value.trim();
@@ -756,6 +774,7 @@
           action: "resolveComplaint",
           ticketId: activeTask.ticketId,
           dept: activeTask.dept,
+          startTime: startTime,
           attendedBy: attendedBy,
           actionTaken: actionTaken,
           materials: materials,
@@ -766,6 +785,7 @@
 
       const completedObj = {
         ...activeTask,
+        startTime: startTime,
         techName: attendedBy,
         actionTaken: actionTaken,
         closeDateTime: closeDateTime
@@ -778,7 +798,6 @@
       openPrintableSlip(completedObj);
     });
 
-    // Populate Exact Physical Slip Modal (Editable before Print)
     function openPrintableSlip(slipData) {
       document.getElementById("slipBisNo").value = slipData.ticketId || "";
       document.getElementById("slipDate").value = slipData.date || "";
@@ -787,7 +806,7 @@
       document.getElementById("slipLocation").value = slipData.location || "";
       document.getElementById("slipProblem").value = slipData.problem || "";
       document.getElementById("slipIntimatedBy").value = slipData.loggedBy || "";
-      document.getElementById("slipIntimatedTime").value = slipData.intimatedTime || "";
+      document.getElementById("slipStartTime").value = slipData.startTime || "";
       document.getElementById("slipWorkDone").value = slipData.actionTaken || "";
       document.getElementById("slipAttendedBy").value = slipData.techName || "";
       document.getElementById("slipCloseDateTime").value = slipData.closeDateTime || "";
@@ -808,7 +827,7 @@
 *LOCATION:* ${document.getElementById("slipLocation").value}
 
 *PROBLEM:* ${document.getElementById("slipProblem").value}
-*INTIMATED:* ${document.getElementById("slipIntimatedBy").value} (${document.getElementById("slipIntimatedTime").value})
+*START TIME:* ${document.getElementById("slipStartTime").value}
 
 *NATURE OF WORK DONE:* ${document.getElementById("slipWorkDone").value}
 *ATTENDED BY:* ${document.getElementById("slipAttendedBy").value}
