@@ -84,7 +84,7 @@
           <div class="text-center py-6 text-xs text-slate-400">Loading tickets...</div>
         </div>
 
-        <!-- B. Completed Slips List (For Printing & Direct Photo Viewing) -->
+        <!-- B. Completed Slips List -->
         <div id="resolvedTasksBox" class="hidden space-y-2.5">
           <div class="text-center py-6 text-xs text-slate-400">No completed slips yet.</div>
         </div>
@@ -179,7 +179,6 @@
             <h4 class="text-[11px] font-bold uppercase tracking-wider text-slate-600">Database & Photo Evidence Links</h4>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
               
-              <!-- Public Sheet (All Admins/Heads) -->
               <a id="adminPublicSheetBtn" href="#" target="_blank" class="p-2.5 bg-white border rounded-lg flex items-center justify-between hover:border-slate-400 shadow-sm">
                 <div>
                   <strong class="text-slate-800 block">📊 Public Live Sheet</strong>
@@ -188,7 +187,6 @@
                 <span class="text-slate-400">&nearr;</span>
               </a>
 
-              <!-- Public Drive Folder (All Admins/Heads) -->
               <a id="adminPublicDriveBtn" href="#" target="_blank" class="p-2.5 bg-white border rounded-lg flex items-center justify-between hover:border-slate-400 shadow-sm">
                 <div>
                   <strong class="text-slate-800 block">🖼️ Public Photo Drive</strong>
@@ -197,7 +195,6 @@
                 <span class="text-slate-400">&nearr;</span>
               </a>
 
-              <!-- Master Edit Sheet (Super Admin Only) -->
               <a id="masterSheetBtn" href="#" target="_blank" class="hidden p-2.5 bg-emerald-50 border border-emerald-300 rounded-lg flex items-center justify-between hover:border-emerald-500 shadow-sm">
                 <div>
                   <strong class="text-emerald-900 block">🔐 Master Sheet (Edit)</strong>
@@ -206,7 +203,6 @@
                 <span class="text-emerald-600">&nearr;</span>
               </a>
 
-              <!-- Master Drive Folder (Super Admin Only) -->
               <a id="masterDriveBtn" href="#" target="_blank" class="hidden p-2.5 bg-blue-50 border border-blue-300 rounded-lg flex items-center justify-between hover:border-blue-500 shadow-sm">
                 <div>
                   <strong class="text-blue-900 block">📁 Master Drive (Full)</strong>
@@ -307,11 +303,11 @@
           <button type="button" onclick="closeSlipModal()" class="text-slate-500 hover:text-red-700 font-bold text-lg px-2">&times;</button>
         </div>
 
-        <!-- EXACT PHYSICAL SLIP LAYOUT -->
+        <!-- EXACT PHYSICAL SLIP LAYOUT[cite: 4] -->
         <div id="printableSlipArea" class="bg-white p-2 text-black font-serif">
           <div class="border-2 border-black">
             
-            <!-- Top Row: CGC Logo + BIS NO / DATE / DOMAIN -->
+            <!-- Top Row: CGC Logo + BIS NO / DATE / DOMAIN[cite: 4] -->
             <div class="grid grid-cols-12 border-b-2 border-black">
               <div class="col-span-7 p-2.5 flex items-center gap-3 border-r-2 border-black">
                 <img src="cgc-logo.png" alt="CGC" class="w-12 h-12 object-contain" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/en/thumb/6/60/Chandigarh_Group_of_Colleges_logo.png/220px-Chandigarh_Group_of_Colleges_logo.png'">
@@ -338,7 +334,7 @@
               </div>
             </div>
 
-            <!-- Row 2: MACHINE NAME/CODE & LOCATION -->
+            <!-- Row 2: MACHINE NAME/CODE & LOCATION[cite: 4] -->
             <div class="grid grid-cols-12 border-b-2 border-black text-xs font-sans">
               <div class="col-span-7 p-2 border-r-2 border-black flex items-center">
                 <span class="font-bold mr-1 whitespace-nowrap">MACHINE NAME/CODE:</span>
@@ -350,13 +346,13 @@
               </div>
             </div>
 
-            <!-- Row 3: DESCRIPTION OF PROBLEM -->
+            <!-- Row 3: DESCRIPTION OF PROBLEM[cite: 4] -->
             <div class="border-b-2 border-black p-2 font-sans">
               <div class="text-xs font-bold mb-1">DESCRIPTION OF PROBLEM</div>
               <textarea id="slipProblem" rows="3" class="w-full text-sm font-medium leading-snug focus:bg-yellow-50"></textarea>
             </div>
 
-            <!-- Row 4: INTIMATED BY/SIGN & START TIME -->
+            <!-- Row 4: INTIMATED BY/SIGN & START TIME[cite: 4] -->
             <div class="grid grid-cols-12 border-b-2 border-black text-xs font-sans">
               <div class="col-span-7 p-2 border-r-2 border-black">
                 <div class="font-bold mb-3">INTIMATED BY/SIGN</div>
@@ -368,13 +364,13 @@
               </div>
             </div>
 
-            <!-- Row 5: NATURE OF WORK DONE -->
+            <!-- Row 5: NATURE OF WORK DONE[cite: 4] -->
             <div class="border-b-2 border-black p-2 font-sans">
               <div class="text-xs font-bold mb-1">NATURE OF WORK DONE</div>
               <textarea id="slipWorkDone" rows="3" class="w-full text-sm font-medium leading-snug focus:bg-yellow-50"></textarea>
             </div>
 
-            <!-- Row 6: COMPLAINT ATTENDED BY & COMPLAINT CLOSE DATE & TIME -->
+            <!-- Row 6: COMPLAINT ATTENDED BY & COMPLAINT CLOSE DATE & TIME[cite: 4] -->
             <div class="grid grid-cols-12 text-xs font-sans">
               <div class="col-span-6 p-2 border-r-2 border-black">
                 <span class="font-bold block mb-1">COMPLAINT ATTENDED BY:</span>
@@ -389,10 +385,13 @@
           </div>
         </div>
 
-        <!-- Clickable Photo Proofs Bar inside Modal (Not Printed) -->
-        <div id="slipPhotoLinksBox" class="hidden no-print bg-blue-50 border border-blue-200 rounded-lg p-3 space-y-1.5">
-          <div class="text-[11px] font-bold text-blue-900 uppercase">📸 Clickable Google Drive Proof Photos:</div>
-          <div id="slipPhotoLinksList" class="flex flex-wrap gap-2"></div>
+        <!-- Preview of Attached Photos Ready for WhatsApp (Not Printed) -->
+        <div id="slipPhotosPreviewBar" class="hidden no-print bg-emerald-50 border border-emerald-200 rounded-lg p-3 space-y-2">
+          <div class="flex justify-between items-center">
+            <span class="text-[11px] font-bold text-emerald-900 uppercase">📸 <span id="readyPhotoCount">0</span> Photo(s) Ready to Attach on WhatsApp</span>
+            <span id="photoFetchStatus" class="text-[10px] text-emerald-700 font-semibold"></span>
+          </div>
+          <div id="slipModalThumbnails" class="grid grid-cols-6 gap-1.5"></div>
         </div>
 
         <!-- Action Buttons -->
@@ -400,8 +399,8 @@
           <button type="button" onclick="window.print()" class="py-2.5 bg-slate-900 hover:bg-black text-white font-bold rounded-lg text-xs flex items-center justify-center gap-1.5 shadow">
             <span>🖨️ Print Slip</span>
           </button>
-          <button type="button" onclick="shareWhatsAppSlip()" class="py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg text-xs flex items-center justify-center gap-1.5 shadow">
-            <span>📲 Share to WhatsApp</span>
+          <button type="button" id="waShareBtn" onclick="shareWhatsAppSlip()" class="py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg text-xs flex items-center justify-center gap-1.5 shadow">
+            <span>📲 Share Photos & Slip</span>
           </button>
           <button type="button" onclick="closeSlipModal()" class="col-span-2 sm:col-span-1 py-2.5 bg-slate-200 text-slate-700 font-bold rounded-lg text-xs">
             Done / Close
@@ -419,7 +418,7 @@
 
   <script>
     // ================= CONFIGURATION =================
-    const SCRIPT_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbydJmGVtwoUK_MDc1rIywIoUi82Or7K4dost6jsqPw8YKDSlpg4Jdqdbd8R2tiw7vIx/exec";
     const SUPER_ADMIN_PIN = "8556";
 
     const PUBLIC_SHEET_URL = "https://docs.google.com/spreadsheets/d/1swg4bktSwIcZwTJmuBu26xlPiJwlHCA8I0-h7St_g0Q/edit?usp=sharing";
@@ -434,7 +433,7 @@
     let allDeptTasks = [];
     let activeTask = null;
     let workPhotos = [];
-    let currentSlipDriveLinks = [];
+    let readyShareFiles = []; // Pre-built File objects for instant mobile WhatsApp attachment
 
     window.addEventListener("load", () => {
       document.getElementById("adminPublicSheetBtn").href = PUBLIC_SHEET_URL;
@@ -672,12 +671,12 @@
                   <p class="text-[10px] text-slate-500">By: ${t.techName}</p>
                 </div>
                 <button type="button" onclick="openSlipById('${t.ticketId}')" class="bg-slate-800 hover:bg-black text-white font-bold px-3 py-1.5 rounded text-xs shadow-sm shrink-0">
-                  🖨️ View / Print Slip
+                  🖨️ View / Share Slip
                 </button>
               </div>
               ${pLinks.length > 0 ? `
                 <div class="flex flex-wrap gap-1.5 pt-1 border-t border-slate-200">
-                  ${pLinks.map((url, idx) => `<a href="${url}" target="_blank" class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded text-[10px] font-bold hover:bg-blue-200">🖼️ Open Photo ${idx + 1} &nearr;</a>`).join("")}
+                  ${pLinks.map((url, idx) => `<a href="${url}" target="_blank" class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded text-[10px] font-bold hover:bg-blue-200">🖼️ View Photo ${idx + 1} &nearr;</a>`).join("")}
                 </div>
               ` : ''}
             </div>
@@ -713,14 +712,33 @@
       document.getElementById("attendBox").classList.remove("hidden");
     }
 
-    function openSlipById(ticketId) {
+    async function openSlipById(ticketId) {
       const slipData = allDeptTasks.find(t => t.ticketId === ticketId);
-      if (slipData) openPrintableSlip(slipData);
+      if (!slipData) return;
+      openPrintableSlip(slipData, []);
+
+      // If opening an older completed slip, fetch its actual photos from Drive so WhatsApp attaches real images
+      const pLinks = (slipData.photos || "").split(/\s+/).filter(u => u.startsWith("http"));
+      if (pLinks.length > 0) {
+        const previewBar = document.getElementById("slipPhotosPreviewBar");
+        const statusEl = document.getElementById("photoFetchStatus");
+        previewBar.classList.remove("hidden");
+        statusEl.innerText = "Loading photos from Drive for WhatsApp...";
+        try {
+          const res = await fetch(`${SCRIPT_URL}?action=getPhotoBlobs&urls=${encodeURIComponent(pLinks.join(","))}`);
+          const b64List = await res.json();
+          prepareReadyShareFiles(b64List, slipData.ticketId);
+          statusEl.innerText = "Ready to attach!";
+        } catch (e) {
+          statusEl.innerText = "";
+        }
+      }
     }
 
     function cancelAttend() {
       activeTask = null;
       workPhotos = [];
+      readyShareFiles = [];
       renderPhotosGrid();
       document.getElementById("openTasksBox").classList.remove("hidden");
       document.getElementById("attendBox").classList.add("hidden");
@@ -746,7 +764,6 @@
       reader.readAsDataURL(file);
     }
 
-    // Synchronous Base64 to File Converter (Preserves User Gesture for Mobile WhatsApp Share)
     function dataURLtoFile(dataurl, filename) {
       const arr = dataurl.split(',');
       const mime = arr[0].match(/:(.*?);/)[1];
@@ -757,6 +774,21 @@
         u8arr[n] = bstr.charCodeAt(n);
       }
       return new File([u8arr], filename, { type: mime });
+    }
+
+    function prepareReadyShareFiles(b64Array, bisNo) {
+      readyShareFiles = b64Array.map((b64, i) => dataURLtoFile(b64, `BIS_${bisNo}_Photo_${i + 1}.jpg`));
+      const bar = document.getElementById("slipPhotosPreviewBar");
+      const thumbs = document.getElementById("slipModalThumbnails");
+      document.getElementById("readyPhotoCount").innerText = readyShareFiles.length;
+
+      if (b64Array.length > 0) {
+        bar.classList.remove("hidden");
+        thumbs.innerHTML = b64Array.map(src => `<img src="${src}" class="h-12 w-full object-cover rounded border border-emerald-400">`).join("");
+      } else {
+        bar.classList.add("hidden");
+        thumbs.innerHTML = "";
+      }
     }
 
     document.getElementById("photoInput").addEventListener("change", function(e) {
@@ -796,7 +828,9 @@
       const closeDateTime = document.getElementById("closeDateTimeInput").value.trim();
       const materials = document.getElementById("materials").value.trim() || "None";
 
-      const response = await fetch(SCRIPT_URL, {
+      const capturedPhotosCopy = [...workPhotos];
+
+      await fetch(SCRIPT_URL, {
         method: "POST",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify({
@@ -808,27 +842,24 @@
           actionTaken: actionTaken,
           materials: materials,
           closeDateTime: closeDateTime,
-          photos: workPhotos
+          photos: capturedPhotosCopy
         })
       });
-      const result = await response.json();
-      const savedLinks = (result.photoUrls || []).join(" \n");
 
       const completedObj = {
         ...activeTask,
         startTime: startTime,
         techName: attendedBy,
         actionTaken: actionTaken,
-        closeDateTime: closeDateTime,
-        photos: savedLinks
+        closeDateTime: closeDateTime
       };
 
       btn.disabled = false;
       btn.innerText = "✓ Save & Generate Printable Slip";
-      openPrintableSlip(completedObj);
+      openPrintableSlip(completedObj, capturedPhotosCopy);
     });
 
-    function openPrintableSlip(slipData) {
+    function openPrintableSlip(slipData, b64PhotosList = []) {
       document.getElementById("slipBisNo").value = slipData.ticketId || "";
       document.getElementById("slipDate").value = slipData.date || "";
       document.getElementById("slipDomain").value = slipData.dept || "";
@@ -841,23 +872,7 @@
       document.getElementById("slipAttendedBy").value = slipData.techName || "";
       document.getElementById("slipCloseDateTime").value = slipData.closeDateTime || "";
 
-      // Render Clickable Photo Buttons inside Modal
-      currentSlipDriveLinks = (slipData.photos || "").split(/\s+/).filter(u => u.startsWith("http"));
-      const linksBox = document.getElementById("slipPhotoLinksBox");
-      const linksList = document.getElementById("slipPhotoLinksList");
-
-      if (currentSlipDriveLinks.length > 0) {
-        linksBox.classList.remove("hidden");
-        linksList.innerHTML = currentSlipDriveLinks.map((url, i) => `
-          <a href="${url}" target="_blank" class="px-2.5 py-1 bg-white border border-blue-300 text-blue-800 rounded text-xs font-bold hover:bg-blue-100 shadow-sm">
-            🖼️ Open Photo ${i + 1} &nearr;
-          </a>
-        `).join("");
-      } else {
-        linksBox.classList.add("hidden");
-        linksList.innerHTML = "";
-      }
-
+      prepareReadyShareFiles(b64PhotosList, slipData.ticketId);
       document.getElementById("slipModal").classList.remove("hidden");
     }
 
@@ -867,13 +882,9 @@
       fetchAllTasks();
     }
 
-    // Synchronous Multi-Photo Attachment + Direct Clickable Drive Links on WhatsApp
+    // Direct Image File Attachment on WhatsApp (Zero Links)
     async function shareWhatsAppSlip() {
       const bisNo = document.getElementById("slipBisNo").value;
-      const linksSection = currentSlipDriveLinks.length > 0 
-        ? `\n*📸 WORK PHOTO LINKS:*\n` + currentSlipDriveLinks.map((u, i) => `Photo ${i + 1}: ${u}`).join("\n")
-        : "";
-
       const msg = `*🏛️ CGC UNIVERSITY MOHALI - MAINTENANCE SLIP*
 ━━━━━━━━━━━━━━━━━━━
 *BIS NO.:* ${bisNo}
@@ -886,26 +897,42 @@
 
 *NATURE OF WORK DONE:* ${document.getElementById("slipWorkDone").value}
 *ATTENDED BY:* ${document.getElementById("slipAttendedBy").value}
-*CLOSE DATE & TIME:* ${document.getElementById("slipCloseDateTime").value}${linksSection}
+*CLOSE DATE & TIME:* ${document.getElementById("slipCloseDateTime").value}
 ━━━━━━━━━━━━━━━━━━━`;
 
-      // 1. Mobile Native Share (Attaches actual JPEG image files + text)
-      if (workPhotos && workPhotos.length > 0 && navigator.canShare) {
+      // 1. Mobile Native Share: Attaches actual JPEG files + Slip Text directly to WhatsApp
+      if (readyShareFiles.length > 0 && navigator.canShare && navigator.canShare({ files: readyShareFiles })) {
         try {
-          const filesArray = workPhotos.map((b64, i) => dataURLtoFile(b64, `BIS_${bisNo}_Photo_${i + 1}.jpg`));
-          if (navigator.canShare({ files: filesArray })) {
-            await navigator.share({
-              text: msg,
-              files: filesArray
-            });
-            return;
-          }
+          await navigator.share({
+            files: readyShareFiles,
+            text: msg
+          });
+          return;
         } catch (err) {
-          console.warn("Native file share error:", err);
+          if (err.name === "AbortError") return;
+          // If a specific Android model blocks files + text together, share the image files directly and copy text
+          try {
+            if (navigator.clipboard) navigator.clipboard.writeText(msg);
+            await navigator.share({ files: readyShareFiles });
+            return;
+          } catch (e2) {}
         }
       }
 
-      // 2. Desktop / Fallback WhatsApp (Includes clickable Drive photo links inside the message)
+      // 2. If on Desktop PC (where browser cannot push image files into WhatsApp Web automatically):
+      // Auto-download the actual JPEG photos so user can drop them into WhatsApp, and open WhatsApp text
+      if (readyShareFiles.length > 0) {
+        readyShareFiles.forEach(file => {
+          const url = URL.createObjectURL(file);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = file.name;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(url), 2000);
+        });
+      }
       window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
     }
   </script>
