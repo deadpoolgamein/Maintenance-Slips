@@ -3,22 +3,51 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>CGC Campus Maintenance System</title>
+  <title>CGC University Maintenance Slip System</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Print Styling: Only prints the exact CGC Slip */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printableSlipArea, #printableSlipArea * {
+        visibility: visible;
+      }
+      #printableSlipArea {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        padding: 10px;
+        background: white !important;
+        box-shadow: none !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      input, textarea {
+        border: none !important;
+        background: transparent !important;
+        resize: none !important;
+        outline: none !important;
+      }
+    }
+  </style>
 </head>
 <body class="bg-slate-100 text-slate-800 p-2 sm:p-5 font-sans min-h-screen flex flex-col justify-between">
 
   <div class="max-w-xl mx-auto w-full bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden relative mb-4">
     
-    <!-- Header -->
+    <!-- App Header -->
     <div class="bg-red-800 text-white p-3.5 sm:p-4 text-center relative shadow-sm">
       <div class="flex items-center justify-center gap-3 mb-1">
         <div class="bg-white p-1 rounded-lg shadow-sm flex items-center justify-center w-12 h-12 shrink-0">
           <img src="cgc-logo.png" alt="CGC Logo" class="max-w-full max-h-full object-contain" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/en/thumb/6/60/Chandigarh_Group_of_Colleges_logo.png/220px-Chandigarh_Group_of_Colleges_logo.png'">
         </div>
         <div class="text-left">
-          <h1 class="text-lg sm:text-xl font-bold tracking-wide leading-tight">CGC CAMPUS MAINTENANCE</h1>
-          <p class="text-[10px] sm:text-xs text-red-200 uppercase tracking-wider">Multi-Department Operations Desk</p>
+          <h1 class="text-lg sm:text-xl font-bold tracking-wide leading-tight">CGC UNIVERSITY MOHALI</h1>
+          <p class="text-[10px] sm:text-xs text-red-200 uppercase tracking-wider">Maintenance Slip & Work Execution Portal</p>
         </div>
       </div>
       <div class="mt-2 inline-block bg-red-950/70 border border-red-700/80 rounded-full px-3 py-0.5">
@@ -26,10 +55,10 @@
       </div>
     </div>
 
-    <!-- Navigation Tabs -->
+    <!-- Main Navigation Tabs -->
     <div class="grid grid-cols-2 bg-slate-200 border-b text-xs font-bold uppercase tracking-wider">
       <button type="button" onclick="switchMainTab('tech')" id="btnTabTech" class="py-3 text-red-900 border-b-2 border-red-800 bg-white">
-        🛠️ Technician Desk
+        🛠️ Technician & Slips
       </button>
       <button type="button" onclick="switchMainTab('admin')" id="btnTabAdmin" class="py-3 text-slate-600 hover:text-slate-900">
         🔐 Incharge & Admin Panel
@@ -38,95 +67,91 @@
 
     <div class="p-4 sm:p-6">
 
-      <!-- ================= 1. TECHNICIAN DESK ================= -->
+      <!-- ================= 1. TECHNICIAN & SLIPS DESK ================= -->
       <div id="techView" class="space-y-4">
         
-        <!-- Public Quick Link for Techs -->
         <div class="flex justify-between items-center bg-slate-50 border border-slate-200 px-3 py-2 rounded-lg">
-          <span class="text-[11px] text-slate-500 font-medium">Need live job status?</span>
+          <span class="text-[11px] text-slate-500 font-medium">Live Public Record:</span>
           <a id="techPublicSheetBtn" href="#" target="_blank" class="text-xs font-bold text-red-800 hover:underline flex items-center gap-1">
-            📊 View Public Dashboard &nearr;
+            📊 View Public Sheet &nearr;
           </a>
         </div>
 
-        <!-- Department Selector for Technician -->
+        <!-- Department Selector -->
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Select Department</label>
-          <select id="techDeptFilter" onchange="fetchOpenTasks()" class="w-full p-2 border-2 border-slate-300 rounded-lg text-xs font-bold bg-white text-slate-800 outline-none"></select>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Select Department / Domain</label>
+          <select id="techDeptFilter" onchange="fetchAllTasks()" class="w-full p-2 border-2 border-slate-300 rounded-lg text-xs font-bold bg-white text-slate-800 outline-none"></select>
         </div>
 
-        <!-- Open Jobs List Container -->
-        <div id="openTasksBox">
-          <div class="flex justify-between items-center mb-2">
-            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-700">Open Tickets (<span id="openCount">0</span>)</h2>
-            <button type="button" onclick="fetchOpenTasks()" class="text-xs text-blue-700 font-bold hover:underline">🔄 Refresh List</button>
-          </div>
-          <div id="openTasksList" class="space-y-2.5">
-            <div class="text-center py-6 text-xs text-slate-400">Loading open complaints...</div>
-          </div>
+        <!-- Sub-tabs: Open Tickets vs Resolved Printable Slips -->
+        <div class="flex border-b border-slate-200 text-xs font-bold">
+          <button type="button" onclick="switchSubTab('open')" id="subBtnOpen" class="px-4 py-2 text-red-800 border-b-2 border-red-800">
+            ⏳ Open Tickets (<span id="openCount">0</span>)
+          </button>
+          <button type="button" onclick="switchSubTab('resolved')" id="subBtnResolved" class="px-4 py-2 text-slate-500 hover:text-slate-800">
+            🖨️ Completed Slips (<span id="resolvedCount">0</span>)
+          </button>
+          <button type="button" onclick="fetchAllTasks()" class="ml-auto text-blue-700 px-2 py-2 hover:underline">🔄 Refresh</button>
         </div>
 
-        <!-- Attending Form -->
+        <!-- A. Open Jobs List -->
+        <div id="openTasksBox" class="space-y-2.5">
+          <div class="text-center py-6 text-xs text-slate-400">Loading tickets...</div>
+        </div>
+
+        <!-- B. Completed Slips List (For Printing) -->
+        <div id="resolvedTasksBox" class="hidden space-y-2.5">
+          <div class="text-center py-6 text-xs text-slate-400">No completed slips yet.</div>
+        </div>
+
+        <!-- C. Attending & Solving Form -->
         <div id="attendBox" class="hidden space-y-4 border-t pt-4">
           <div class="flex justify-between items-center bg-red-50 p-3 rounded-lg border border-red-200 text-xs">
             <div>
-              <span class="text-slate-500 block">Attending Ticket:</span>
+              <span class="text-slate-500 block">Attending BIS NO:</span>
               <strong id="activeTktId" class="text-red-900 font-mono text-sm"></strong>
             </div>
             <button type="button" onclick="cancelAttend()" class="text-xs text-red-700 font-bold hover:underline">&larr; Back</button>
           </div>
 
           <div class="bg-slate-50 p-3 rounded-lg border text-xs space-y-1">
+            <div><strong>Machine/Code:</strong> <span id="activeMachine"></span></div>
             <div><strong>Location:</strong> <span id="activeLocation"></span></div>
             <div><strong>Problem:</strong> <span id="activeProblem"></span></div>
-            <div><strong>Logged By:</strong> <span id="activeLoggedBy"></span></div>
+            <div><strong>Intimated:</strong> <span id="activeLoggedBy"></span> (<span id="activeIntTime"></span>)</div>
           </div>
 
           <form id="resolveForm" class="space-y-3">
-            <div class="grid grid-cols-2 gap-2 text-xs bg-amber-50/60 p-2.5 rounded-lg border border-amber-200">
-              <div>
-                <label class="font-semibold text-slate-600">Attending Technician</label>
-                <input type="text" id="techName" value="Sandeep Singh" required class="w-full p-1.5 border rounded bg-white text-xs mt-1">
-              </div>
-              <div>
-                <label class="font-semibold text-slate-600">Emp Code</label>
-                <input type="text" id="techEmpCode" value="J-5383" required class="w-full p-1.5 border rounded bg-white text-xs mt-1 font-medium">
-              </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Complaint Attended By (Name & Emp Code) *</label>
+              <input type="text" id="attendedByInput" value="Sandeep J-5383" required placeholder="e.g. Tejinder - J-5472, Sandeep J-5383" class="w-full p-2 border rounded-lg bg-amber-50/40 text-xs font-medium">
+              <p class="text-[10px] text-slate-400 mt-0.5">Ek se zyada technician ho to comma laga kar likhein</p>
             </div>
 
             <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">Work Done / Action Taken *</label>
-              <textarea id="actionTaken" rows="2" required placeholder="Detail me likhein kya theek kiya..." class="w-full p-2 border rounded-lg text-xs"></textarea>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Nature of Work Done *</label>
+              <textarea id="actionTaken" rows="2" required placeholder="e.g. New Railing Making outside of Axis Bank Done." class="w-full p-2 border rounded-lg text-xs"></textarea>
             </div>
 
             <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">Material Used (Open Text)</label>
-              <textarea id="materials" rows="2" placeholder="Jo bhi samaan use hua likhein ya 'None'..." class="w-full p-2 border rounded-lg text-xs"></textarea>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Material Consumed (Internal Record)</label>
+              <input type="text" id="materials" placeholder="Jo samaan use hua likhein ya 'None'..." class="w-full p-2 border rounded-lg text-xs">
             </div>
 
-            <div class="grid grid-cols-3 gap-2">
-              <div>
-                <label class="block text-[11px] font-semibold text-slate-600 mb-1">Time Started</label>
-                <input type="time" id="timeIn" required class="w-full p-1.5 border rounded text-xs">
-              </div>
-              <div>
-                <label class="block text-[11px] font-semibold text-slate-600 mb-1">Time Finished</label>
-                <input type="time" id="timeOut" required class="w-full p-1.5 border rounded text-xs">
-              </div>
-              <div class="flex items-end">
-                <button type="button" onclick="setNowTimes()" class="w-full py-2 bg-slate-200 text-[11px] font-bold rounded">Set Now</button>
-              </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Complaint Close Date & Time *</label>
+              <input type="text" id="closeDateTimeInput" required class="w-full p-2 border rounded-lg text-xs font-mono">
             </div>
 
             <!-- Multi-Photo (Up to 6) -->
             <div class="border-2 border-dashed border-slate-300 rounded-xl p-3 bg-slate-50 space-y-2">
               <div class="flex justify-between items-center">
-                <span class="text-xs font-bold uppercase text-slate-700">Work Photos / Video Proof</span>
+                <span class="text-xs font-bold uppercase text-slate-700">Work Photos Proof (Optional)</span>
                 <span id="photoCount" class="text-xs font-mono font-bold bg-slate-200 px-2 py-0.5 rounded">0 / 6</span>
               </div>
               
-              <label id="photoTriggerBox" class="flex flex-col items-center justify-center p-3 border-2 border-dashed border-red-300 rounded-lg cursor-pointer bg-white hover:bg-red-50/40">
-                <span class="text-xs font-bold text-red-800">📷 Add Work Photo</span>
+              <label id="photoTriggerBox" class="flex flex-col items-center justify-center p-2.5 border-2 border-dashed border-red-300 rounded-lg cursor-pointer bg-white hover:bg-red-50/40">
+                <span class="text-xs font-bold text-red-800">📷 Add Photo Proof</span>
                 <input type="file" id="photoInput" accept="image/*" capture="environment" class="hidden">
               </label>
 
@@ -134,7 +159,7 @@
             </div>
 
             <button type="submit" id="resolveSubmitBtn" class="w-full py-3 bg-red-800 hover:bg-red-900 text-white font-bold rounded-lg text-sm shadow">
-              ✓ Complete & Save Job Record
+              ✓ Save & Generate Printable Slip
             </button>
           </form>
         </div>
@@ -144,7 +169,6 @@
       <!-- ================= 2. ADMIN & INCHARGE PANEL ================= -->
       <div id="adminView" class="hidden space-y-5">
         
-        <!-- PIN Auth Box -->
         <div id="adminAuthBox" class="space-y-3 py-6 text-center max-w-xs mx-auto">
           <div class="w-12 h-12 bg-red-100 text-red-800 rounded-full flex items-center justify-center mx-auto text-xl font-bold">🔒</div>
           <h3 class="text-sm font-bold text-slate-800">Admin & Head Verification</h3>
@@ -153,119 +177,114 @@
           <button type="button" onclick="verifyAdminAccess()" class="w-full py-2.5 bg-red-800 hover:bg-red-900 text-white font-bold rounded-lg text-xs">Unlock Panel</button>
         </div>
 
-        <!-- Authenticated Content -->
         <div id="adminContentBox" class="hidden space-y-4">
           <div class="flex justify-between items-center bg-slate-100 p-2.5 rounded-lg border text-xs">
             <div>Logged in as: <strong id="authUserName" class="text-red-900"></strong> (<span id="authUserRole"></span>)</div>
             <button type="button" onclick="logoutAdmin()" class="text-red-700 font-bold hover:underline">Logout</button>
           </div>
 
-          <!-- Quick Access Links Section -->
+          <!-- Quick Links -->
           <div class="border rounded-xl p-3 bg-slate-50 border-slate-300 space-y-2">
             <h4 class="text-[11px] font-bold uppercase tracking-wider text-slate-600">Direct Database & Media Links</h4>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-              
-              <!-- Public View (All Incharges) -->
               <a id="adminPublicSheetBtn" href="#" target="_blank" class="p-2.5 bg-white border rounded-lg flex items-center justify-between hover:border-slate-400 shadow-sm">
                 <div>
                   <strong class="text-slate-800 block">📊 Public Live Sheet</strong>
-                  <span class="text-[10px] text-slate-400">Read-only status & dashboard</span>
+                  <span class="text-[10px] text-slate-400">Read-only status</span>
                 </div>
                 <span class="text-slate-400">&nearr;</span>
               </a>
-
-              <!-- Master Edit Sheet (Super Admin Only) -->
               <a id="masterSheetBtn" href="#" target="_blank" class="hidden p-2.5 bg-emerald-50 border border-emerald-300 rounded-lg flex items-center justify-between hover:border-emerald-500 shadow-sm">
                 <div>
                   <strong class="text-emerald-900 block">🔐 Master Sheet (Edit)</strong>
-                  <span class="text-[10px] text-emerald-700">Full control, tabs & PINs</span>
+                  <span class="text-[10px] text-emerald-700">Full control & PINs</span>
                 </div>
                 <span class="text-emerald-600">&nearr;</span>
               </a>
-
-              <!-- Master Drive Folder (Super Admin Only) -->
               <a id="masterDriveBtn" href="#" target="_blank" class="hidden p-2.5 bg-blue-50 border border-blue-300 rounded-lg flex items-center justify-between hover:border-blue-500 shadow-sm">
                 <div>
                   <strong class="text-blue-900 block">📁 Master Google Drive</strong>
-                  <span class="text-[10px] text-blue-700">All original photos & proofs</span>
+                  <span class="text-[10px] text-blue-700">All uploaded photos</span>
                 </div>
                 <span class="text-blue-600">&nearr;</span>
               </a>
-
             </div>
           </div>
 
-          <!-- Section A: Log Official CGC Complaint -->
+          <!-- Log Official Complaint (Matches Physical Slip Fields) -->
           <div class="border rounded-xl p-4 bg-slate-50 space-y-3 border-slate-300 shadow-sm">
             <h3 class="text-xs font-bold uppercase tracking-wider text-red-800 flex items-center gap-1.5">
-              <span>➕</span> Log New Complaint (Official Ticket)
+              <span>➕</span> Register Official Complaint Slip
             </h3>
             
             <form id="newComplaintForm" class="space-y-3">
               <div class="grid grid-cols-2 gap-2">
                 <div>
-                  <label class="block text-xs font-semibold text-slate-600 mb-1">Official Ticket ID *</label>
-                  <input type="text" id="newTicketId" required placeholder="e.g. CGC-2026-9041" class="w-full p-2 border font-mono font-bold text-xs rounded bg-white">
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">BIS NO. (Ticket ID) *</label>
+                  <input type="text" id="newTicketId" required placeholder="e.g. 8941" class="w-full p-2 border font-mono font-bold text-xs rounded bg-white">
                 </div>
                 <div>
-                  <label class="block text-xs font-semibold text-slate-600 mb-1">Target Department *</label>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Domain (Department) *</label>
                   <select id="newComplaintDept" required class="w-full p-2 border text-xs rounded bg-white font-bold"></select>
                 </div>
               </div>
 
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Location / Machine / Unit *</label>
-                <input type="text" id="newLocation" required placeholder="e.g. Mess 1 Boiler / Tagore Hostel 210" class="w-full p-2 border text-xs rounded bg-white">
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Machine Name / Code *</label>
+                  <input type="text" id="newMachineName" required placeholder="e.g. Stair Railing" class="w-full p-2 border text-xs rounded bg-white">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Location *</label>
+                  <input type="text" id="newLocation" required placeholder="e.g. Axis Bank" class="w-full p-2 border text-xs rounded bg-white">
+                </div>
               </div>
 
               <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Problem Description *</label>
-                <textarea id="newProblem" rows="2" required placeholder="Breakdown details..." class="w-full p-2 border text-xs rounded bg-white"></textarea>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Description of Problem *</label>
+                <textarea id="newProblem" rows="2" required placeholder="e.g. Need new stair railing outside of Axis Bank" class="w-full p-2 border text-xs rounded bg-white"></textarea>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Intimated Time *</label>
+                <input type="text" id="newIntimatedTime" required placeholder="e.g. 4:30 PM" class="w-full p-2 border text-xs rounded bg-white">
               </div>
 
               <button type="submit" id="logComplaintBtn" class="w-full py-2.5 bg-red-800 hover:bg-red-900 text-white font-bold rounded-lg text-xs shadow">
-                Post to Department Open Board
+                Post Complaint to Open Board
               </button>
             </form>
           </div>
 
-          <!-- Section B: Super Admin Only (Manage Departments & Incharges) -->
+          <!-- Super Admin Only Tools -->
           <div id="superAdminTools" class="space-y-4">
-            
-            <!-- Departments Manager -->
             <div class="border rounded-xl p-4 bg-white space-y-3 border-slate-300 shadow-sm">
               <div class="flex justify-between items-center">
-                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800">Departments (Auto-Sheets)</h3>
-                <button type="button" onclick="toggleDeptForm()" class="text-xs text-red-800 font-bold hover:underline">+ New Department</button>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800">Departments / Domains</h3>
+                <button type="button" onclick="toggleDeptForm()" class="text-xs text-red-800 font-bold hover:underline">+ New Domain</button>
               </div>
-
               <form id="addDeptForm" class="hidden space-y-2 bg-slate-50 p-3 rounded-lg border">
-                <input type="text" id="newDeptInput" required placeholder="Dept Name (e.g. Electrical / Plumbing / Civil)" class="w-full p-1.5 border rounded text-xs">
-                <button type="submit" id="saveDeptBtn" class="w-full py-1.5 bg-slate-800 text-white text-xs font-bold rounded">Create Department & Sheet Tab</button>
+                <input type="text" id="newDeptInput" required placeholder="Domain Name (e.g. Electrical / Plumbing)" class="w-full p-1.5 border rounded text-xs">
+                <button type="submit" id="saveDeptBtn" class="w-full py-1.5 bg-slate-800 text-white text-xs font-bold rounded">Create Domain & Auto-Sheet</button>
               </form>
-
               <div id="deptsListBadge" class="flex flex-wrap gap-1.5 pt-1"></div>
             </div>
 
-            <!-- Admins / Heads Manager -->
             <div class="border rounded-xl p-4 bg-white space-y-3 border-slate-300 shadow-sm">
               <div class="flex justify-between items-center">
-                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800">Department Incharges / Heads</h3>
-                <button type="button" onclick="toggleHeadForm()" class="text-xs text-red-800 font-bold hover:underline">+ Add Incharge</button>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800">Department Heads / Incharges</h3>
+                <button type="button" onclick="toggleHeadForm()" class="text-xs text-red-800 font-bold hover:underline">+ Add Head</button>
               </div>
-
               <form id="addAdminForm" class="hidden space-y-2 bg-slate-50 p-3 rounded-lg border">
-                <input type="text" id="headNameInput" required placeholder="Head Name (e.g. Er. Rajesh Kumar)" class="w-full p-1.5 border rounded text-xs">
+                <input type="text" id="headNameInput" required placeholder="Head Name" class="w-full p-1.5 border rounded text-xs">
                 <div class="grid grid-cols-2 gap-2">
                   <select id="headDeptSelect" required class="w-full p-1.5 border rounded text-xs bg-white"></select>
                   <input type="password" maxlength="6" id="headPinInput" required placeholder="4-Digit PIN" class="w-full p-1.5 border rounded text-xs font-mono font-bold">
                 </div>
-                <button type="submit" id="saveAdminBtn" class="w-full py-1.5 bg-slate-800 text-white text-xs font-bold rounded">Save Incharge Credentials</button>
+                <button type="submit" id="saveAdminBtn" class="w-full py-1.5 bg-slate-800 text-white text-xs font-bold rounded">Save Head Credentials</button>
               </form>
-
               <div id="adminsListContainer" class="space-y-1.5 text-xs"></div>
             </div>
-
           </div>
 
         </div>
@@ -274,65 +293,159 @@
 
     </div>
 
-    <!-- WhatsApp Share Modal -->
-    <div id="shareModal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
-      <div class="bg-white rounded-xl max-w-md w-full p-5 shadow-2xl text-center space-y-3">
-        <div class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto text-xl font-bold">✓</div>
-        <h3 class="text-base font-bold text-slate-800">Job Recorded & Closed!</h3>
-        <p class="text-xs text-slate-500">Record officially saved in Department Sheet with photos in Drive.</p>
+    <!-- ================= EXACT PHYSICAL PRINTABLE SLIP MODAL ================= -->
+    <div id="slipModal" class="hidden fixed inset-0 bg-black/75 flex items-center justify-center p-2 sm:p-4 z-50 overflow-y-auto">
+      <div class="bg-white rounded-xl max-w-2xl w-full p-4 sm:p-6 shadow-2xl space-y-4">
         
-        <div id="slipReceiptPreview" class="bg-slate-50 border rounded-lg p-3 text-left text-xs font-mono text-slate-700 max-h-44 overflow-y-auto whitespace-pre-wrap"></div>
+        <div class="flex justify-between items-center no-print border-b pb-2">
+          <div>
+            <h3 class="text-sm font-bold text-slate-800">🖨️ Official Maintenance Slip (Editable)</h3>
+            <p class="text-[11px] text-slate-500">Kisi bhi box par click karke print se pehle edit kar sakte hain</p>
+          </div>
+          <button type="button" onclick="closeSlipModal()" class="text-slate-500 hover:text-red-700 font-bold text-lg px-2">&times;</button>
+        </div>
 
-        <div class="flex flex-col gap-2 pt-1">
-          <button type="button" onclick="shareToWhatsApp()" class="w-full py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg flex items-center justify-center gap-2 text-xs shadow">
-            <span>📲 Share Update to Department WhatsApp</span>
+        <!-- EXACT PHYSICAL SLIP LAYOUT -->
+        <div id="printableSlipArea" class="bg-white p-2 text-black font-serif">
+          <div class="border-2 border-black">
+            
+            <!-- Top Row: CGC Logo + BIS NO / DATE / DOMAIN -->
+            <div class="grid grid-cols-12 border-b-2 border-black">
+              <!-- Logo & University Name -->
+              <div class="col-span-7 p-2.5 flex items-center gap-3 border-r-2 border-black">
+                <img src="cgc-logo.png" alt="CGC" class="w-12 h-12 object-contain" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/en/thumb/6/60/Chandigarh_Group_of_Colleges_logo.png/220px-Chandigarh_Group_of_Colleges_logo.png'">
+                <div>
+                  <div class="font-sans font-black text-xl leading-none tracking-tight">CGC</div>
+                  <div class="font-sans font-bold text-sm leading-tight">UNIVERSITY</div>
+                  <div class="font-sans font-bold text-[10px] tracking-widest">MOHALI</div>
+                </div>
+              </div>
+              
+              <!-- BIS NO, DATE, DOMAIN -->
+              <div class="col-span-5 text-xs font-sans flex flex-col justify-between">
+                <div class="border-b border-black px-2 py-1 flex items-center">
+                  <span class="font-bold mr-1 whitespace-nowrap">BIS NO.</span>
+                  <input type="text" id="slipBisNo" class="w-full font-mono font-bold text-xs focus:bg-yellow-50">
+                </div>
+                <div class="border-b border-black px-2 py-1 flex items-center">
+                  <span class="font-bold mr-1 whitespace-nowrap">DATE:</span>
+                  <input type="text" id="slipDate" class="w-full font-bold text-xs focus:bg-yellow-50">
+                </div>
+                <div class="px-2 py-1 flex items-center">
+                  <span class="font-bold mr-1 whitespace-nowrap">DOMAIN:</span>
+                  <input type="text" id="slipDomain" class="w-full font-bold text-xs focus:bg-yellow-50">
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 2: MACHINE NAME/CODE & LOCATION -->
+            <div class="grid grid-cols-12 border-b-2 border-black text-xs font-sans">
+              <div class="col-span-7 p-2 border-r-2 border-black flex items-center">
+                <span class="font-bold mr-1 whitespace-nowrap">MACHINE NAME/CODE:</span>
+                <input type="text" id="slipMachine" class="w-full font-semibold text-sm focus:bg-yellow-50">
+              </div>
+              <div class="col-span-5 p-2 flex items-center">
+                <span class="font-bold mr-1 whitespace-nowrap">LOCATION:</span>
+                <input type="text" id="slipLocation" class="w-full font-semibold text-sm focus:bg-yellow-50">
+              </div>
+            </div>
+
+            <!-- Row 3: DESCRIPTION OF PROBLEM -->
+            <div class="border-b-2 border-black p-2 font-sans">
+              <div class="text-xs font-bold mb-1">DESCRIPTION OF PROBLEM</div>
+              <textarea id="slipProblem" rows="3" class="w-full text-sm font-medium leading-snug focus:bg-yellow-50"></textarea>
+            </div>
+
+            <!-- Row 4: INTIMATED BY/SIGN & INTIMATED TIME -->
+            <div class="grid grid-cols-12 border-b-2 border-black text-xs font-sans">
+              <div class="col-span-7 p-2 border-r-2 border-black">
+                <div class="font-bold mb-3">INTIMATED BY/SIGN</div>
+                <input type="text" id="slipIntimatedBy" class="w-full text-xs text-slate-700 focus:bg-yellow-50">
+              </div>
+              <div class="col-span-5 p-2 flex flex-col justify-between">
+                <div class="font-bold">INTIMATED TIME:</div>
+                <input type="text" id="slipIntimatedTime" class="w-full font-bold text-sm mt-2 focus:bg-yellow-50">
+              </div>
+            </div>
+
+            <!-- Row 5: NATURE OF WORK DONE -->
+            <div class="border-b-2 border-black p-2 font-sans">
+              <div class="text-xs font-bold mb-1">NATURE OF WORK DONE</div>
+              <textarea id="slipWorkDone" rows="3" class="w-full text-sm font-medium leading-snug focus:bg-yellow-50"></textarea>
+            </div>
+
+            <!-- Row 6: COMPLAINT ATTENDED BY & COMPLAINT CLOSE DATE & TIME -->
+            <div class="grid grid-cols-12 text-xs font-sans">
+              <div class="col-span-6 p-2 border-r-2 border-black">
+                <span class="font-bold block mb-1">COMPLAINT ATTENDED BY:</span>
+                <input type="text" id="slipAttendedBy" class="w-full font-bold text-sm focus:bg-yellow-50">
+              </div>
+              <div class="col-span-6 p-2">
+                <span class="font-bold block mb-1">COMPLAINT CLOSE DATE & TIME:</span>
+                <input type="text" id="slipCloseDateTime" class="w-full font-bold text-sm focus:bg-yellow-50">
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Action Buttons (Not Printed) -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-2 no-print">
+          <button type="button" onclick="window.print()" class="py-2.5 bg-slate-900 hover:bg-black text-white font-bold rounded-lg text-xs flex items-center justify-center gap-1.5 shadow">
+            <span>🖨️ Print Slip</span>
           </button>
-          <button type="button" onclick="closeShareModal()" class="w-full py-2 bg-slate-200 text-slate-700 font-semibold rounded-lg text-xs">
-            Back to Open Tasks
+          <button type="button" onclick="shareWhatsAppSlip()" class="py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg text-xs flex items-center justify-center gap-1.5 shadow">
+            <span>📲 WhatsApp Share</span>
+          </button>
+          <button type="button" onclick="closeSlipModal()" class="col-span-2 sm:col-span-1 py-2.5 bg-slate-200 text-slate-700 font-bold rounded-lg text-xs">
+            Done / Close
           </button>
         </div>
+
       </div>
     </div>
 
   </div>
 
   <footer class="text-center py-2 text-xs text-slate-400">
-    System Managed & Developed by <strong class="text-slate-600">Sandeep Singh</strong> (Emp Code: <span class="font-mono text-slate-700">J-5383</span>) &bull; CGC Maintenance
+    System Managed & Developed by <strong class="text-slate-600">Sandeep Singh</strong> (Emp Code: <span class="font-mono text-slate-700">J-5383</span>) &bull; CGC University Mohali
   </footer>
 
   <script>
-    // ================= CONFIGURATION LINKS =================
+    // ================= CONFIGURATION =================
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbydJmGVtwoUK_MDc1rIywIoUi82Or7K4dost6jsqPw8YKDSlpg4Jdqdbd8R2tiw7vIx/exec";
-    const SUPER_ADMIN_PIN = "8556";
+    const SUPER_ADMIN_PIN = "9300";
 
-    // Yahan apne exact links daal dein:
     const PUBLIC_SHEET_URL = "https://docs.google.com/spreadsheets/d/1swg4bktSwIcZwTJmuBu26xlPiJwlHCA8I0-h7St_g0Q/edit?usp=sharing";
     const MASTER_SHEET_URL = "https://docs.google.com/spreadsheets/d/1aQB_L-j4G_tgsf1SmOT3zwxrWJO1VIsu3wc8ktsWYpU/edit?usp=sharing";
     const MASTER_DRIVE_URL = "https://drive.google.com/drive/folders/12yk3fbg85KX9TAC4NLD_XHPd5ojGqRmI";
-    // ========================================================
+    // =================================================
 
     let departments = [];
     let adminsList = [];
     let currentAuthUser = null;
-    let openTasks = [];
+    let allDeptTasks = [];
     let activeTask = null;
     let workPhotos = [];
-    let lastSummaryText = "";
 
     window.addEventListener("load", () => {
-      // Setup Initial Static Links
       document.getElementById("techPublicSheetBtn").href = PUBLIC_SHEET_URL;
       document.getElementById("adminPublicSheetBtn").href = PUBLIC_SHEET_URL;
       document.getElementById("masterSheetBtn").href = MASTER_SHEET_URL;
       document.getElementById("masterDriveBtn").href = MASTER_DRIVE_URL;
-
+      setDefaultAdminTime();
       loadInitialData();
     });
+
+    function setDefaultAdminTime() {
+      const now = new Date();
+      document.getElementById("newIntimatedTime").value = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
 
     async function loadInitialData() {
       await fetchDepartments();
       await fetchAdmins();
-      fetchOpenTasks();
+      fetchAllTasks();
     }
 
     function switchMainTab(tab) {
@@ -349,64 +462,54 @@
       }
     }
 
-    // Departments API
+    function switchSubTab(type) {
+      cancelAttend();
+      if (type === "open") {
+        document.getElementById("openTasksBox").classList.remove("hidden");
+        document.getElementById("resolvedTasksBox").classList.add("hidden");
+        document.getElementById("subBtnOpen").className = "px-4 py-2 text-red-800 border-b-2 border-red-800";
+        document.getElementById("subBtnResolved").className = "px-4 py-2 text-slate-500 hover:text-slate-800";
+      } else {
+        document.getElementById("openTasksBox").classList.add("hidden");
+        document.getElementById("resolvedTasksBox").classList.remove("hidden");
+        document.getElementById("subBtnResolved").className = "px-4 py-2 text-red-800 border-b-2 border-red-800";
+        document.getElementById("subBtnOpen").className = "px-4 py-2 text-slate-500 hover:text-slate-800";
+      }
+    }
+
     async function fetchDepartments() {
       try {
         const res = await fetch(`${SCRIPT_URL}?action=getDepartments`);
         departments = await res.json();
-        
-        const filter = document.getElementById("techDeptFilter");
-        const compDeptSelect = document.getElementById("newComplaintDept");
-        const headDeptSelect = document.getElementById("headDeptSelect");
-        const badgeBox = document.getElementById("deptsListBadge");
-
         const options = departments.map(d => `<option value="${d}">${d}</option>`).join("");
-        filter.innerHTML = options;
-        compDeptSelect.innerHTML = options;
-        headDeptSelect.innerHTML = options;
-
-        badgeBox.innerHTML = departments.map(d => `
-          <span class="px-2.5 py-1 bg-slate-100 border text-slate-700 rounded-md text-xs font-semibold">📁 Dept_${d}</span>
-        `).join("");
-      } catch (e) {
-        console.warn("Depts fetch error", e);
-      }
+        document.getElementById("techDeptFilter").innerHTML = options;
+        document.getElementById("newComplaintDept").innerHTML = options;
+        document.getElementById("headDeptSelect").innerHTML = options;
+        document.getElementById("deptsListBadge").innerHTML = departments.map(d => `<span class="px-2.5 py-1 bg-slate-100 border text-slate-700 rounded-md text-xs font-semibold">📁 Dept_${d}</span>`).join("");
+      } catch (e) {}
     }
 
-    // Admins API
     async function fetchAdmins() {
       try {
         const res = await fetch(`${SCRIPT_URL}?action=getAdmins`);
         adminsList = await res.json();
-        
-        const listContainer = document.getElementById("adminsListContainer");
-        listContainer.innerHTML = adminsList.map(a => `
+        document.getElementById("adminsListContainer").innerHTML = adminsList.map(a => `
           <div class="p-2 border rounded bg-slate-50 flex justify-between items-center">
-            <div>
-              <strong>${a.name}</strong> <span class="text-slate-500">(${a.dept})</span>
-              <div class="text-[10px] text-slate-400 uppercase font-bold">${a.role}</div>
-            </div>
+            <div><strong>${a.name}</strong> <span class="text-slate-500">(${a.dept})</span> <div class="text-[10px] text-slate-400 uppercase font-bold">${a.role}</div></div>
             <span class="font-mono text-slate-400 text-xs">PIN: ****</span>
           </div>
         `).join("");
-      } catch (e) {
-        console.warn("Admins fetch error", e);
-      }
+      } catch (e) {}
     }
 
-    // Auth Admin
     function verifyAdminAccess() {
       const pin = document.getElementById("adminPinInput").value.trim();
       if (pin === SUPER_ADMIN_PIN) {
         currentAuthUser = { name: "Sandeep Singh", role: "Super Admin", dept: "ALL" };
       } else {
         const found = adminsList.find(a => String(a.pin) === pin);
-        if (found) {
-          currentAuthUser = found;
-        } else {
-          alert("Invalid PIN!");
-          return;
-        }
+        if (found) currentAuthUser = found;
+        else return alert("Invalid PIN!");
       }
 
       document.getElementById("adminAuthBox").classList.add("hidden");
@@ -414,7 +517,6 @@
       document.getElementById("authUserName").innerText = currentAuthUser.name;
       document.getElementById("authUserRole").innerText = `${currentAuthUser.role} - ${currentAuthUser.dept}`;
 
-      // Privilege-based Link Display
       if (currentAuthUser.role === "Super Admin") {
         document.getElementById("superAdminTools").classList.remove("hidden");
         document.getElementById("masterSheetBtn").classList.remove("hidden");
@@ -439,140 +541,148 @@
     function toggleDeptForm() { document.getElementById("addDeptForm").classList.toggle("hidden"); }
     function toggleHeadForm() { document.getElementById("addAdminForm").classList.toggle("hidden"); }
 
-    // Add Dept
     document.getElementById("addDeptForm").addEventListener("submit", async function(e) {
       e.preventDefault();
       const btn = document.getElementById("saveDeptBtn");
       btn.disabled = true;
-      const deptName = document.getElementById("newDeptInput").value.trim();
-
-      try {
-        await fetch(SCRIPT_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: "addDepartment", deptName: deptName })
-        });
-        document.getElementById("newDeptInput").value = "";
-        toggleDeptForm();
-        await fetchDepartments();
-      } catch (err) {
-        alert("Failed to create department");
-      } finally {
-        btn.disabled = false;
-      }
+      await fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ action: "addDepartment", deptName: document.getElementById("newDeptInput").value.trim() })
+      });
+      document.getElementById("newDeptInput").value = "";
+      toggleDeptForm();
+      await fetchDepartments();
+      btn.disabled = false;
     });
 
-    // Add Admin / Head
     document.getElementById("addAdminForm").addEventListener("submit", async function(e) {
       e.preventDefault();
       const btn = document.getElementById("saveAdminBtn");
       btn.disabled = true;
-
-      const payload = {
-        action: "addAdmin",
-        name: document.getElementById("headNameInput").value.trim(),
-        dept: document.getElementById("headDeptSelect").value,
-        role: "Incharge",
-        pin: document.getElementById("headPinInput").value.trim()
-      };
-
-      try {
-        await fetch(SCRIPT_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(payload)
-        });
-        document.getElementById("addAdminForm").reset();
-        toggleHeadForm();
-        await fetchAdmins();
-      } catch (err) {
-        alert("Failed to save admin");
-      } finally {
-        btn.disabled = false;
-      }
+      await fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "addAdmin",
+          name: document.getElementById("headNameInput").value.trim(),
+          dept: document.getElementById("headDeptSelect").value,
+          role: "Incharge",
+          pin: document.getElementById("headPinInput").value.trim()
+        })
+      });
+      document.getElementById("addAdminForm").reset();
+      toggleHeadForm();
+      await fetchAdmins();
+      btn.disabled = false;
     });
 
-    // Log Complaint
     document.getElementById("newComplaintForm").addEventListener("submit", async function(e) {
       e.preventDefault();
       const btn = document.getElementById("logComplaintBtn");
       btn.disabled = true;
-      btn.innerText = "Adding Complaint...";
-
+      btn.innerText = "Posting...";
       const targetDept = currentAuthUser.role === "Super Admin" ? document.getElementById("newComplaintDept").value : currentAuthUser.dept;
 
-      const payload = {
-        action: "logComplaint",
-        ticketId: document.getElementById("newTicketId").value.trim(),
-        dept: targetDept,
-        location: document.getElementById("newLocation").value.trim(),
-        problem: document.getElementById("newProblem").value.trim(),
-        loggedBy: currentAuthUser.name
-      };
-
-      try {
-        await fetch(SCRIPT_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(payload)
-        });
-        alert(`✅ Official Ticket registered under Dept_${targetDept}!`);
-        document.getElementById("newComplaintForm").reset();
-        fetchOpenTasks();
-      } catch (err) {
-        alert("Failed to register complaint");
-      } finally {
-        btn.disabled = false;
-        btn.innerText = "Post to Department Open Board";
-      }
+      await fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "logComplaint",
+          ticketId: document.getElementById("newTicketId").value.trim(),
+          dept: targetDept,
+          machineName: document.getElementById("newMachineName").value.trim(),
+          location: document.getElementById("newLocation").value.trim(),
+          problem: document.getElementById("newProblem").value.trim(),
+          intimatedTime: document.getElementById("newIntimatedTime").value.trim(),
+          loggedBy: currentAuthUser.name
+        })
+      });
+      alert("✅ Complaint added to Open Board!");
+      document.getElementById("newComplaintForm").reset();
+      setDefaultAdminTime();
+      fetchAllTasks();
+      btn.disabled = false;
+      btn.innerText = "Post Complaint to Open Board";
     });
 
-    // Technician Desk Functions
-    async function fetchOpenTasks() {
+    async function fetchAllTasks() {
       const dept = document.getElementById("techDeptFilter").value;
       if (!dept) return;
 
-      const container = document.getElementById("openTasksList");
-      container.innerHTML = `<div class="text-center py-4 text-xs text-slate-400">Loading ${dept} open tasks...</div>`;
+      const openBox = document.getElementById("openTasksList");
+      const resBox = document.getElementById("resolvedTasksBox");
+      openBox.innerHTML = `<div class="text-center py-4 text-xs text-slate-400">Loading...</div>`;
 
       try {
-        const res = await fetch(`${SCRIPT_URL}?action=getOpenTasks&dept=${encodeURIComponent(dept)}`);
-        openTasks = await res.json();
-        document.getElementById("openCount").innerText = openTasks.length;
+        const res = await fetch(`${SCRIPT_URL}?action=getTasks&dept=${encodeURIComponent(dept)}`);
+        allDeptTasks = await res.json();
 
-        if (openTasks.length === 0) {
-          container.innerHTML = `<div class="text-center py-6 text-xs text-emerald-600 font-bold">🎉 No open tickets in ${dept}!</div>`;
-          return;
+        const pending = allDeptTasks.filter(t => t.status === "PENDING");
+        const resolved = allDeptTasks.filter(t => t.status === "RESOLVED").reverse();
+
+        document.getElementById("openCount").innerText = pending.length;
+        document.getElementById("resolvedCount").innerText = resolved.length;
+
+        if (pending.length === 0) {
+          openBox.innerHTML = `<div class="text-center py-6 text-xs text-emerald-600 font-bold">🎉 No pending complaints!</div>`;
+        } else {
+          openBox.innerHTML = pending.map(t => `
+            <div class="bg-white border rounded-lg p-3 shadow-sm flex justify-between items-center">
+              <div class="space-y-0.5">
+                <span class="text-xs font-mono font-bold text-red-800">BIS: ${t.ticketId}</span>
+                <p class="text-xs font-bold text-slate-800">${t.machineName} <span class="text-slate-500 font-normal">(${t.location})</span></p>
+                <p class="text-[11px] text-slate-600">${t.problem}</p>
+                <p class="text-[10px] text-slate-400">Intimated: ${t.loggedBy} @ ${t.intimatedTime}</p>
+              </div>
+              <button type="button" onclick='startAttending(${JSON.stringify(t).replace(/'/g, "&#39;")})' class="bg-red-800 hover:bg-red-900 text-white font-bold px-3 py-1.5 rounded text-xs shadow-sm">
+                Attend &rarr;
+              </button>
+            </div>
+          `).join("");
         }
 
-        container.innerHTML = openTasks.map((t, idx) => `
-          <div class="bg-white border rounded-lg p-3 shadow-sm hover:border-slate-400 transition flex justify-between items-center">
-            <div class="space-y-0.5">
-              <span class="text-xs font-mono font-bold text-red-800">${t.ticketId}</span>
-              <p class="text-xs font-bold text-slate-800 mt-1">${t.location}</p>
-              <p class="text-[11px] text-slate-500">${t.problem}</p>
-              <p class="text-[10px] text-slate-400">By: ${t.loggedBy}</p>
+        if (resolved.length === 0) {
+          resBox.innerHTML = `<div class="text-center py-6 text-xs text-slate-400">No completed slips yet.</div>`;
+        } else {
+          resBox.innerHTML = resolved.map(t => `
+            <div class="bg-slate-50 border rounded-lg p-3 flex justify-between items-center">
+              <div class="space-y-0.5">
+                <span class="text-xs font-mono font-bold text-emerald-800">BIS: ${t.ticketId} &bull; ${t.date}</span>
+                <p class="text-xs font-bold text-slate-800">${t.machineName} (${t.location})</p>
+                <p class="text-[11px] text-slate-600">${t.actionTaken}</p>
+                <p class="text-[10px] text-slate-500">By: ${t.techName}</p>
+              </div>
+              <button type="button" onclick='openPrintableSlip(${JSON.stringify(t).replace(/'/g, "&#39;")})' class="bg-slate-800 hover:bg-black text-white font-bold px-3 py-1.5 rounded text-xs shadow-sm">
+                🖨️ View / Print Slip
+              </button>
             </div>
-            <button type="button" onclick="startAttending(${idx})" class="bg-red-800 hover:bg-red-900 text-white font-bold px-3 py-1.5 rounded text-xs shadow-sm">
-              Attend &rarr;
-            </button>
-          </div>
-        `).join("");
+          `).join("");
+        }
+
       } catch (err) {
-        container.innerHTML = `<div class="text-center py-4 text-xs text-red-500">Failed to load open tickets.</div>`;
+        openBox.innerHTML = `<div class="text-center py-4 text-xs text-red-500">Failed to load data.</div>`;
       }
     }
 
-    function startAttending(idx) {
-      activeTask = openTasks[idx];
-      document.getElementById("activeTktId").innerText = `${activeTask.ticketId} (${activeTask.dept})`;
-      document.getElementById("activeLocation").innerText = activeTask.location;
-      document.getElementById("activeProblem").innerText = activeTask.problem;
-      document.getElementById("activeLoggedBy").innerText = activeTask.loggedBy;
+    function startAttending(task) {
+      activeTask = task;
+      document.getElementById("activeTktId").innerText = task.ticketId;
+      document.getElementById("activeMachine").innerText = task.machineName;
+      document.getElementById("activeLocation").innerText = task.location;
+      document.getElementById("activeProblem").innerText = task.problem;
+      document.getElementById("activeLoggedBy").innerText = task.loggedBy;
+      document.getElementById("activeIntTime").innerText = task.intimatedTime;
+
+      const now = new Date();
+      const dd = String(now.getDate()).padStart(2, '0');
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const yy = String(now.getFullYear()).slice(-2);
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      document.getElementById("closeDateTimeInput").value = `${dd}/${mm}/${yy} ${timeStr}`;
 
       document.getElementById("openTasksBox").classList.add("hidden");
       document.getElementById("attendBox").classList.remove("hidden");
-      setNowTimes();
     }
 
     function cancelAttend() {
@@ -581,13 +691,6 @@
       renderPhotosGrid();
       document.getElementById("openTasksBox").classList.remove("hidden");
       document.getElementById("attendBox").classList.add("hidden");
-    }
-
-    function setNowTimes() {
-      const now = new Date();
-      const formatted = now.toTimeString().substring(0, 5);
-      if (!document.getElementById("timeIn").value) document.getElementById("timeIn").value = formatted;
-      document.getElementById("timeOut").value = formatted;
     }
 
     // Photo Compression
@@ -612,140 +715,106 @@
 
     document.getElementById("photoInput").addEventListener("change", function(e) {
       if (!e.target.files[0]) return;
-      if (workPhotos.length >= 6) {
-        alert("Maximum 6 photos allowed per job.");
-        return;
-      }
-      compressImage(e.target.files[0], function(base64) {
+      if (workPhotos.length >= 6) return alert("Maximum 6 photos allowed.");
+      compressImage(e.target.files[0], base64 => {
         workPhotos.push(base64);
         renderPhotosGrid();
       });
       e.target.value = "";
     });
 
-    function removePhoto(idx) {
-      workPhotos.splice(idx, 1);
-      renderPhotosGrid();
-    }
+    function removePhoto(idx) { workPhotos.splice(idx, 1); renderPhotosGrid(); }
 
     function renderPhotosGrid() {
       const grid = document.getElementById("photosPreviewGrid");
-      const counter = document.getElementById("photoCount");
-      const trigger = document.getElementById("photoTriggerBox");
-
-      counter.innerText = `${workPhotos.length} / 6`;
-      grid.innerHTML = "";
-
-      workPhotos.forEach((src, idx) => {
-        const div = document.createElement("div");
-        div.className = "relative rounded-lg overflow-hidden border border-slate-300 h-20 bg-slate-100";
-        div.innerHTML = `
+      document.getElementById("photoCount").innerText = `${workPhotos.length} / 6`;
+      grid.innerHTML = workPhotos.map((src, idx) => `
+        <div class="relative rounded-lg overflow-hidden border h-20">
           <img src="${src}" class="w-full h-full object-cover">
-          <button type="button" onclick="removePhoto(${idx})" class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold shadow">&times;</button>
-        `;
-        grid.appendChild(div);
-      });
-
-      if (workPhotos.length >= 6) {
-        trigger.classList.add("hidden");
-      } else {
-        trigger.classList.remove("hidden");
-      }
+          <button type="button" onclick="removePhoto(${idx})" class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 text-xs font-bold">&times;</button>
+        </div>
+      `).join("");
     }
 
-    // Resolve Job
     document.getElementById("resolveForm").addEventListener("submit", async function(e) {
       e.preventDefault();
       if (!activeTask) return;
 
       const btn = document.getElementById("resolveSubmitBtn");
       btn.disabled = true;
-      btn.innerText = `Saving & Uploading ${workPhotos.length} Photos...`;
+      btn.innerText = "Saving & Generating Slip...";
 
-      const tIn = document.getElementById("timeIn").value;
-      const tOut = document.getElementById("timeOut").value;
-      let durationStr = "N/A";
-      if (tIn && tOut) {
-        const [h1, m1] = tIn.split(":").map(Number);
-        const [h2, m2] = tOut.split(":").map(Number);
-        let diff = (h2 * 60 + m2) - (h1 * 60 + m1);
-        if (diff < 0) diff += 24 * 60;
-        durationStr = `${Math.floor(diff / 60)}h ${diff % 60}m`;
-      }
+      const attendedBy = document.getElementById("attendedByInput").value.trim();
+      const actionTaken = document.getElementById("actionTaken").value.trim();
+      const closeDateTime = document.getElementById("closeDateTimeInput").value.trim();
+      const materials = document.getElementById("materials").value.trim() || "None";
 
-      const payload = {
-        action: "resolveComplaint",
-        ticketId: activeTask.ticketId,
-        dept: activeTask.dept,
-        techName: document.getElementById("techName").value.trim(),
-        techEmpCode: document.getElementById("techEmpCode").value.trim(),
-        actionTaken: document.getElementById("actionTaken").value.trim(),
-        materials: document.getElementById("materials").value.trim() || "None",
-        duration: `${durationStr} (${tIn} - ${tOut})`,
-        photos: workPhotos
+      await fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "resolveComplaint",
+          ticketId: activeTask.ticketId,
+          dept: activeTask.dept,
+          attendedBy: attendedBy,
+          actionTaken: actionTaken,
+          materials: materials,
+          closeDateTime: closeDateTime,
+          photos: workPhotos
+        })
+      });
+
+      const completedObj = {
+        ...activeTask,
+        techName: attendedBy,
+        actionTaken: actionTaken,
+        closeDateTime: closeDateTime
       };
 
-      try {
-        const res = await fetch(SCRIPT_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(payload)
-        });
-        await res.json();
-
-        lastSummaryText = 
-`*🏛️ CGC MAINTENANCE - JOB COMPLETED*
-━━━━━━━━━━━━━━━━━━━
-*Official Ticket ID:* ${payload.ticketId}
-*Department:* ${activeTask.dept}
-*Location / Unit:* ${activeTask.location}
-
-*🔧 Attending Staff:* ${payload.techName} (${payload.techEmpCode})
-*⏱️ Duration:* ${payload.duration}
-
-*🛠️ Action Taken:* ${payload.actionTaken}
-*📦 Material Used:* ${payload.materials}
-*📸 Work Proofs:* ${workPhotos.length} Photo(s) Recorded
-━━━━━━━━━━━━━━━━━━━
-✅ _Logged into Dept_${activeTask.dept} Sheet_
-⚡ _System by Sandeep Singh (Emp Code: J-5383)_`;
-
-        document.getElementById("slipReceiptPreview").innerText = lastSummaryText;
-        document.getElementById("shareModal").classList.remove("hidden");
-      } catch (err) {
-        alert("Error saving record: " + err.message);
-      } finally {
-        btn.disabled = false;
-        btn.innerText = "✓ Complete & Save Job Record";
-      }
+      btn.disabled = false;
+      btn.innerText = "✓ Save & Generate Printable Slip";
+      cancelAttend();
+      fetchAllTasks();
+      openPrintableSlip(completedObj);
     });
 
-    function closeShareModal() {
-      document.getElementById("shareModal").classList.add("hidden");
-      cancelAttend();
-      fetchOpenTasks();
+    // Populate Exact Physical Slip Modal (Editable before Print)
+    function openPrintableSlip(slipData) {
+      document.getElementById("slipBisNo").value = slipData.ticketId || "";
+      document.getElementById("slipDate").value = slipData.date || "";
+      document.getElementById("slipDomain").value = slipData.dept || "";
+      document.getElementById("slipMachine").value = slipData.machineName || "";
+      document.getElementById("slipLocation").value = slipData.location || "";
+      document.getElementById("slipProblem").value = slipData.problem || "";
+      document.getElementById("slipIntimatedBy").value = slipData.loggedBy || "";
+      document.getElementById("slipIntimatedTime").value = slipData.intimatedTime || "";
+      document.getElementById("slipWorkDone").value = slipData.actionTaken || "";
+      document.getElementById("slipAttendedBy").value = slipData.techName || "";
+      document.getElementById("slipCloseDateTime").value = slipData.closeDateTime || "";
+
+      document.getElementById("slipModal").classList.remove("hidden");
     }
 
-    async function shareToWhatsApp() {
-      if (workPhotos.length > 0 && navigator.share && navigator.canShare) {
-        try {
-          const res = await fetch(workPhotos[0]);
-          const blob = await res.blob();
-          const file = new File([blob], `${activeTask.ticketId}_proof.jpg`, { type: "image/jpeg" });
+    function closeSlipModal() {
+      document.getElementById("slipModal").classList.add("hidden");
+    }
 
-          if (navigator.canShare({ files: [file] })) {
-            await navigator.share({
-              title: "CGC Maintenance Completion",
-              text: lastSummaryText,
-              files: [file]
-            });
-            return;
-          }
-        } catch (err) {
-          console.log("Web share fallback:", err);
-        }
-      }
-      window.open(`https://wa.me/?text=${encodeURIComponent(lastSummaryText)}`, "_blank");
+    function shareWhatsAppSlip() {
+      const msg = `*🏛️ CGC UNIVERSITY MOHALI - MAINTENANCE SLIP*
+━━━━━━━━━━━━━━━━━━━
+*BIS NO.:* ${document.getElementById("slipBisNo").value}
+*DATE:* ${document.getElementById("slipDate").value} | *DOMAIN:* ${document.getElementById("slipDomain").value}
+*MACHINE:* ${document.getElementById("slipMachine").value}
+*LOCATION:* ${document.getElementById("slipLocation").value}
+
+*PROBLEM:* ${document.getElementById("slipProblem").value}
+*INTIMATED:* ${document.getElementById("slipIntimatedBy").value} (${document.getElementById("slipIntimatedTime").value})
+
+*NATURE OF WORK DONE:* ${document.getElementById("slipWorkDone").value}
+*ATTENDED BY:* ${document.getElementById("slipAttendedBy").value}
+*CLOSE DATE & TIME:* ${document.getElementById("slipCloseDateTime").value}
+━━━━━━━━━━━━━━━━━━━`;
+      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
     }
   </script>
 </body>
