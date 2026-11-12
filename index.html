@@ -84,7 +84,7 @@
           <div class="text-center py-6 text-xs text-slate-400">Loading tickets...</div>
         </div>
 
-        <!-- B. Completed Slips List (For Printing) -->
+        <!-- B. Completed Slips List (For Printing & Direct Photo Viewing) -->
         <div id="resolvedTasksBox" class="hidden space-y-2.5">
           <div class="text-center py-6 text-xs text-slate-400">No completed slips yet.</div>
         </div>
@@ -114,7 +114,7 @@
 
             <div>
               <label class="block text-xs font-bold text-slate-700 mb-1">Nature of Work Done *</label>
-              <textarea id="actionTaken" rows="2" required placeholder="e.g. New Railing Making outside of Axis Bank Done." class="w-full p-2 border rounded-lg text-xs"></textarea>
+              <textarea id="actionTaken" rows="2" required placeholder="e.g. Gate welding done" class="w-full p-2 border rounded-lg text-xs"></textarea>
             </div>
 
             <div>
@@ -137,12 +137,12 @@
             <!-- Multi-Photo (Up to 6) -->
             <div class="border-2 border-dashed border-slate-300 rounded-xl p-3 bg-slate-50 space-y-2">
               <div class="flex justify-between items-center">
-                <span class="text-xs font-bold uppercase text-slate-700">Work Photos Proof (Optional)</span>
+                <span class="text-xs font-bold uppercase text-slate-700">Work Photos Proof (Auto-Compressed)</span>
                 <span id="photoCount" class="text-xs font-mono font-bold bg-slate-200 px-2 py-0.5 rounded">0 / 6</span>
               </div>
               
               <label id="photoTriggerBox" class="flex flex-col items-center justify-center p-2.5 border-2 border-dashed border-red-300 rounded-lg cursor-pointer bg-white hover:bg-red-50/40">
-                <span class="text-xs font-bold text-red-800">📷 Add Photo Proof</span>
+                <span class="text-xs font-bold text-red-800">📷 Click / Add Photo Proof</span>
                 <input type="file" id="photoInput" accept="image/*" capture="environment" class="hidden">
               </label>
 
@@ -297,7 +297,7 @@
 
     <!-- ================= EXACT PHYSICAL PRINTABLE SLIP MODAL ================= -->
     <div id="slipModal" class="hidden fixed inset-0 bg-black/75 flex items-center justify-center p-2 sm:p-4 z-50 overflow-y-auto">
-      <div class="bg-white rounded-xl max-w-2xl w-full p-4 sm:p-6 shadow-2xl space-y-4">
+      <div class="bg-white rounded-xl max-w-2xl w-full p-4 sm:p-6 shadow-2xl space-y-4 my-auto">
         
         <div class="flex justify-between items-center no-print border-b pb-2">
           <div>
@@ -307,11 +307,11 @@
           <button type="button" onclick="closeSlipModal()" class="text-slate-500 hover:text-red-700 font-bold text-lg px-2">&times;</button>
         </div>
 
-        <!-- EXACT PHYSICAL SLIP LAYOUT[cite: 4] -->
+        <!-- EXACT PHYSICAL SLIP LAYOUT -->
         <div id="printableSlipArea" class="bg-white p-2 text-black font-serif">
           <div class="border-2 border-black">
             
-            <!-- Top Row: CGC Logo + BIS NO / DATE / DOMAIN[cite: 4] -->
+            <!-- Top Row: CGC Logo + BIS NO / DATE / DOMAIN -->
             <div class="grid grid-cols-12 border-b-2 border-black">
               <div class="col-span-7 p-2.5 flex items-center gap-3 border-r-2 border-black">
                 <img src="cgc-logo.png" alt="CGC" class="w-12 h-12 object-contain" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/en/thumb/6/60/Chandigarh_Group_of_Colleges_logo.png/220px-Chandigarh_Group_of_Colleges_logo.png'">
@@ -338,7 +338,7 @@
               </div>
             </div>
 
-            <!-- Row 2: MACHINE NAME/CODE & LOCATION[cite: 4] -->
+            <!-- Row 2: MACHINE NAME/CODE & LOCATION -->
             <div class="grid grid-cols-12 border-b-2 border-black text-xs font-sans">
               <div class="col-span-7 p-2 border-r-2 border-black flex items-center">
                 <span class="font-bold mr-1 whitespace-nowrap">MACHINE NAME/CODE:</span>
@@ -350,13 +350,13 @@
               </div>
             </div>
 
-            <!-- Row 3: DESCRIPTION OF PROBLEM[cite: 4] -->
+            <!-- Row 3: DESCRIPTION OF PROBLEM -->
             <div class="border-b-2 border-black p-2 font-sans">
               <div class="text-xs font-bold mb-1">DESCRIPTION OF PROBLEM</div>
               <textarea id="slipProblem" rows="3" class="w-full text-sm font-medium leading-snug focus:bg-yellow-50"></textarea>
             </div>
 
-            <!-- Row 4: INTIMATED BY/SIGN & START TIME (Technician Filled)[cite: 4] -->
+            <!-- Row 4: INTIMATED BY/SIGN & START TIME -->
             <div class="grid grid-cols-12 border-b-2 border-black text-xs font-sans">
               <div class="col-span-7 p-2 border-r-2 border-black">
                 <div class="font-bold mb-3">INTIMATED BY/SIGN</div>
@@ -368,13 +368,13 @@
               </div>
             </div>
 
-            <!-- Row 5: NATURE OF WORK DONE[cite: 4] -->
+            <!-- Row 5: NATURE OF WORK DONE -->
             <div class="border-b-2 border-black p-2 font-sans">
               <div class="text-xs font-bold mb-1">NATURE OF WORK DONE</div>
               <textarea id="slipWorkDone" rows="3" class="w-full text-sm font-medium leading-snug focus:bg-yellow-50"></textarea>
             </div>
 
-            <!-- Row 6: COMPLAINT ATTENDED BY & COMPLAINT CLOSE DATE & TIME[cite: 4] -->
+            <!-- Row 6: COMPLAINT ATTENDED BY & COMPLAINT CLOSE DATE & TIME -->
             <div class="grid grid-cols-12 text-xs font-sans">
               <div class="col-span-6 p-2 border-r-2 border-black">
                 <span class="font-bold block mb-1">COMPLAINT ATTENDED BY:</span>
@@ -389,13 +389,19 @@
           </div>
         </div>
 
+        <!-- Clickable Photo Proofs Bar inside Modal (Not Printed) -->
+        <div id="slipPhotoLinksBox" class="hidden no-print bg-blue-50 border border-blue-200 rounded-lg p-3 space-y-1.5">
+          <div class="text-[11px] font-bold text-blue-900 uppercase">📸 Clickable Google Drive Proof Photos:</div>
+          <div id="slipPhotoLinksList" class="flex flex-wrap gap-2"></div>
+        </div>
+
         <!-- Action Buttons -->
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-2 no-print">
           <button type="button" onclick="window.print()" class="py-2.5 bg-slate-900 hover:bg-black text-white font-bold rounded-lg text-xs flex items-center justify-center gap-1.5 shadow">
             <span>🖨️ Print Slip</span>
           </button>
           <button type="button" onclick="shareWhatsAppSlip()" class="py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg text-xs flex items-center justify-center gap-1.5 shadow">
-            <span>📲 WhatsApp Share (With Photos)</span>
+            <span>📲 Share to WhatsApp</span>
           </button>
           <button type="button" onclick="closeSlipModal()" class="col-span-2 sm:col-span-1 py-2.5 bg-slate-200 text-slate-700 font-bold rounded-lg text-xs">
             Done / Close
@@ -413,7 +419,7 @@
 
   <script>
     // ================= CONFIGURATION =================
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbydJmGVtwoUK_MDc1rIywIoUi82Or7K4dost6jsqPw8YKDSlpg4Jdqdbd8R2tiw7vIx/exec";
+    const SCRIPT_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
     const SUPER_ADMIN_PIN = "8556";
 
     const PUBLIC_SHEET_URL = "https://docs.google.com/spreadsheets/d/1swg4bktSwIcZwTJmuBu26xlPiJwlHCA8I0-h7St_g0Q/edit?usp=sharing";
@@ -428,6 +434,7 @@
     let allDeptTasks = [];
     let activeTask = null;
     let workPhotos = [];
+    let currentSlipDriveLinks = [];
 
     window.addEventListener("load", () => {
       document.getElementById("adminPublicSheetBtn").href = PUBLIC_SHEET_URL;
@@ -653,19 +660,28 @@
         if (resolved.length === 0) {
           resBox.innerHTML = `<div class="text-center py-6 text-xs text-slate-400">No completed slips yet.</div>`;
         } else {
-          resBox.innerHTML = resolved.map(t => `
-            <div class="bg-slate-50 border rounded-lg p-3 flex justify-between items-center">
-              <div class="space-y-0.5">
-                <span class="text-xs font-mono font-bold text-emerald-800">BIS: ${t.ticketId} &bull; ${t.date}</span>
-                <p class="text-xs font-bold text-slate-800">${t.machineName} (${t.location})</p>
-                <p class="text-[11px] text-slate-600">${t.actionTaken}</p>
-                <p class="text-[10px] text-slate-500">By: ${t.techName}</p>
+          resBox.innerHTML = resolved.map(t => {
+            const pLinks = (t.photos || "").split(/\s+/).filter(u => u.startsWith("http"));
+            return `
+            <div class="bg-slate-50 border rounded-lg p-3 space-y-2">
+              <div class="flex justify-between items-center">
+                <div class="space-y-0.5">
+                  <span class="text-xs font-mono font-bold text-emerald-800">BIS: ${t.ticketId} &bull; ${t.date}</span>
+                  <p class="text-xs font-bold text-slate-800">${t.machineName} (${t.location})</p>
+                  <p class="text-[11px] text-slate-600">${t.actionTaken}</p>
+                  <p class="text-[10px] text-slate-500">By: ${t.techName}</p>
+                </div>
+                <button type="button" onclick="openSlipById('${t.ticketId}')" class="bg-slate-800 hover:bg-black text-white font-bold px-3 py-1.5 rounded text-xs shadow-sm shrink-0">
+                  🖨️ View / Print Slip
+                </button>
               </div>
-              <button type="button" onclick="openSlipById('${t.ticketId}')" class="bg-slate-800 hover:bg-black text-white font-bold px-3 py-1.5 rounded text-xs shadow-sm">
-                🖨️ View / Print Slip
-              </button>
+              ${pLinks.length > 0 ? `
+                <div class="flex flex-wrap gap-1.5 pt-1 border-t border-slate-200">
+                  ${pLinks.map((url, idx) => `<a href="${url}" target="_blank" class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded text-[10px] font-bold hover:bg-blue-200">🖼️ Open Photo ${idx + 1} &nearr;</a>`).join("")}
+                </div>
+              ` : ''}
             </div>
-          `).join("");
+          `}).join("");
         }
 
       } catch (err) {
@@ -710,13 +726,13 @@
       document.getElementById("attendBox").classList.add("hidden");
     }
 
-    // High-Efficiency Compression for Google Drive & Fast Upload
+    // High-Efficiency Compression (~80KB per photo)
     function compressImage(file, callback) {
       const reader = new FileReader();
       reader.onload = function(e) {
         const img = new Image();
         img.onload = function() {
-          const maxWidth = 800; // Optimal resolution (~80-120KB per photo)
+          const maxWidth = 800;
           const scale = Math.min(1, maxWidth / img.width);
           const canvas = document.createElement("canvas");
           canvas.width = img.width * scale;
@@ -728,6 +744,19 @@
         img.src = e.target.result;
       };
       reader.readAsDataURL(file);
+    }
+
+    // Synchronous Base64 to File Converter (Preserves User Gesture for Mobile WhatsApp Share)
+    function dataURLtoFile(dataurl, filename) {
+      const arr = dataurl.split(',');
+      const mime = arr[0].match(/:(.*?);/)[1];
+      const bstr = atob(arr[1]);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new File([u8arr], filename, { type: mime });
     }
 
     document.getElementById("photoInput").addEventListener("change", function(e) {
@@ -767,7 +796,7 @@
       const closeDateTime = document.getElementById("closeDateTimeInput").value.trim();
       const materials = document.getElementById("materials").value.trim() || "None";
 
-      await fetch(SCRIPT_URL, {
+      const response = await fetch(SCRIPT_URL, {
         method: "POST",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify({
@@ -782,19 +811,20 @@
           photos: workPhotos
         })
       });
+      const result = await response.json();
+      const savedLinks = (result.photoUrls || []).join(" \n");
 
       const completedObj = {
         ...activeTask,
         startTime: startTime,
         techName: attendedBy,
         actionTaken: actionTaken,
-        closeDateTime: closeDateTime
+        closeDateTime: closeDateTime,
+        photos: savedLinks
       };
 
       btn.disabled = false;
       btn.innerText = "✓ Save & Generate Printable Slip";
-      
-      // Open slip BEFORE clearing workPhotos so WhatsApp can attach all clicked photos
       openPrintableSlip(completedObj);
     });
 
@@ -811,6 +841,23 @@
       document.getElementById("slipAttendedBy").value = slipData.techName || "";
       document.getElementById("slipCloseDateTime").value = slipData.closeDateTime || "";
 
+      // Render Clickable Photo Buttons inside Modal
+      currentSlipDriveLinks = (slipData.photos || "").split(/\s+/).filter(u => u.startsWith("http"));
+      const linksBox = document.getElementById("slipPhotoLinksBox");
+      const linksList = document.getElementById("slipPhotoLinksList");
+
+      if (currentSlipDriveLinks.length > 0) {
+        linksBox.classList.remove("hidden");
+        linksList.innerHTML = currentSlipDriveLinks.map((url, i) => `
+          <a href="${url}" target="_blank" class="px-2.5 py-1 bg-white border border-blue-300 text-blue-800 rounded text-xs font-bold hover:bg-blue-100 shadow-sm">
+            🖼️ Open Photo ${i + 1} &nearr;
+          </a>
+        `).join("");
+      } else {
+        linksBox.classList.add("hidden");
+        linksList.innerHTML = "";
+      }
+
       document.getElementById("slipModal").classList.remove("hidden");
     }
 
@@ -820,9 +867,13 @@
       fetchAllTasks();
     }
 
-    // Attach ALL Clicked Photos to WhatsApp
+    // Synchronous Multi-Photo Attachment + Direct Clickable Drive Links on WhatsApp
     async function shareWhatsAppSlip() {
       const bisNo = document.getElementById("slipBisNo").value;
+      const linksSection = currentSlipDriveLinks.length > 0 
+        ? `\n*📸 WORK PHOTO LINKS:*\n` + currentSlipDriveLinks.map((u, i) => `Photo ${i + 1}: ${u}`).join("\n")
+        : "";
+
       const msg = `*🏛️ CGC UNIVERSITY MOHALI - MAINTENANCE SLIP*
 ━━━━━━━━━━━━━━━━━━━
 *BIS NO.:* ${bisNo}
@@ -835,32 +886,26 @@
 
 *NATURE OF WORK DONE:* ${document.getElementById("slipWorkDone").value}
 *ATTENDED BY:* ${document.getElementById("slipAttendedBy").value}
-*CLOSE DATE & TIME:* ${document.getElementById("slipCloseDateTime").value}
+*CLOSE DATE & TIME:* ${document.getElementById("slipCloseDateTime").value}${linksSection}
 ━━━━━━━━━━━━━━━━━━━`;
 
-      if (workPhotos && workPhotos.length > 0 && navigator.share && navigator.canShare) {
+      // 1. Mobile Native Share (Attaches actual JPEG image files + text)
+      if (workPhotos && workPhotos.length > 0 && navigator.canShare) {
         try {
-          const filesArray = [];
-          for (let i = 0; i < workPhotos.length; i++) {
-            const res = await fetch(workPhotos[i]);
-            const blob = await res.blob();
-            const file = new File([blob], `BIS_${bisNo}_Photo_${i + 1}.jpg`, { type: "image/jpeg" });
-            filesArray.push(file);
-          }
-
+          const filesArray = workPhotos.map((b64, i) => dataURLtoFile(b64, `BIS_${bisNo}_Photo_${i + 1}.jpg`));
           if (navigator.canShare({ files: filesArray })) {
             await navigator.share({
-              title: `Maintenance Slip - BIS ${bisNo}`,
               text: msg,
               files: filesArray
             });
             return;
           }
         } catch (err) {
-          console.log("Multi-file share fallback:", err);
+          console.warn("Native file share error:", err);
         }
       }
 
+      // 2. Desktop / Fallback WhatsApp (Includes clickable Drive photo links inside the message)
       window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
     }
   </script>
