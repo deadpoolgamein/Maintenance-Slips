@@ -174,7 +174,7 @@
             <button type="button" onclick="logoutAdmin()" class="text-red-700 font-bold hover:underline">Logout</button>
           </div>
 
-          <!-- Quick Access Links (Public Sheet & Drive for All Admins; Master Sheet & Drive for Super Admin) -->
+          <!-- Quick Access Links -->
           <div class="border rounded-xl p-3 bg-slate-50 border-slate-300 space-y-2">
             <h4 class="text-[11px] font-bold uppercase tracking-wider text-slate-600">Database & Photo Evidence Links</h4>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
@@ -218,7 +218,7 @@
             </div>
           </div>
 
-          <!-- Log Official Complaint (Without Intimated Time) -->
+          <!-- Log Official Complaint -->
           <div class="border rounded-xl p-4 bg-slate-50 space-y-3 border-slate-300 shadow-sm">
             <h3 class="text-xs font-bold uppercase tracking-wider text-red-800 flex items-center gap-1.5">
               <span>➕</span> Register Official Complaint Slip
@@ -307,11 +307,11 @@
           <button type="button" onclick="closeSlipModal()" class="text-slate-500 hover:text-red-700 font-bold text-lg px-2">&times;</button>
         </div>
 
-        <!-- EXACT PHYSICAL SLIP LAYOUT -->
+        <!-- EXACT PHYSICAL SLIP LAYOUT[cite: 4] -->
         <div id="printableSlipArea" class="bg-white p-2 text-black font-serif">
           <div class="border-2 border-black">
             
-            <!-- Top Row: CGC Logo + BIS NO / DATE / DOMAIN -->
+            <!-- Top Row: CGC Logo + BIS NO / DATE / DOMAIN[cite: 4] -->
             <div class="grid grid-cols-12 border-b-2 border-black">
               <div class="col-span-7 p-2.5 flex items-center gap-3 border-r-2 border-black">
                 <img src="cgc-logo.png" alt="CGC" class="w-12 h-12 object-contain" onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/en/thumb/6/60/Chandigarh_Group_of_Colleges_logo.png/220px-Chandigarh_Group_of_Colleges_logo.png'">
@@ -338,7 +338,7 @@
               </div>
             </div>
 
-            <!-- Row 2: MACHINE NAME/CODE & LOCATION -->
+            <!-- Row 2: MACHINE NAME/CODE & LOCATION[cite: 4] -->
             <div class="grid grid-cols-12 border-b-2 border-black text-xs font-sans">
               <div class="col-span-7 p-2 border-r-2 border-black flex items-center">
                 <span class="font-bold mr-1 whitespace-nowrap">MACHINE NAME/CODE:</span>
@@ -350,13 +350,13 @@
               </div>
             </div>
 
-            <!-- Row 3: DESCRIPTION OF PROBLEM -->
+            <!-- Row 3: DESCRIPTION OF PROBLEM[cite: 4] -->
             <div class="border-b-2 border-black p-2 font-sans">
               <div class="text-xs font-bold mb-1">DESCRIPTION OF PROBLEM</div>
               <textarea id="slipProblem" rows="3" class="w-full text-sm font-medium leading-snug focus:bg-yellow-50"></textarea>
             </div>
 
-            <!-- Row 4: INTIMATED BY/SIGN & START TIME (Technician Filled) -->
+            <!-- Row 4: INTIMATED BY/SIGN & START TIME (Technician Filled)[cite: 4] -->
             <div class="grid grid-cols-12 border-b-2 border-black text-xs font-sans">
               <div class="col-span-7 p-2 border-r-2 border-black">
                 <div class="font-bold mb-3">INTIMATED BY/SIGN</div>
@@ -368,13 +368,13 @@
               </div>
             </div>
 
-            <!-- Row 5: NATURE OF WORK DONE -->
+            <!-- Row 5: NATURE OF WORK DONE[cite: 4] -->
             <div class="border-b-2 border-black p-2 font-sans">
               <div class="text-xs font-bold mb-1">NATURE OF WORK DONE</div>
               <textarea id="slipWorkDone" rows="3" class="w-full text-sm font-medium leading-snug focus:bg-yellow-50"></textarea>
             </div>
 
-            <!-- Row 6: COMPLAINT ATTENDED BY & COMPLAINT CLOSE DATE & TIME -->
+            <!-- Row 6: COMPLAINT ATTENDED BY & COMPLAINT CLOSE DATE & TIME[cite: 4] -->
             <div class="grid grid-cols-12 text-xs font-sans">
               <div class="col-span-6 p-2 border-r-2 border-black">
                 <span class="font-bold block mb-1">COMPLAINT ATTENDED BY:</span>
@@ -395,7 +395,7 @@
             <span>🖨️ Print Slip</span>
           </button>
           <button type="button" onclick="shareWhatsAppSlip()" class="py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg text-xs flex items-center justify-center gap-1.5 shadow">
-            <span>📲 WhatsApp Share</span>
+            <span>📲 WhatsApp Share (With Photos)</span>
           </button>
           <button type="button" onclick="closeSlipModal()" class="col-span-2 sm:col-span-1 py-2.5 bg-slate-200 text-slate-700 font-bold rounded-lg text-xs">
             Done / Close
@@ -635,7 +635,7 @@
         if (pending.length === 0) {
           openBox.innerHTML = `<div class="text-center py-6 text-xs text-emerald-600 font-bold">🎉 No pending complaints!</div>`;
         } else {
-          openBox.innerHTML = pending.map((t, idx) => `
+          openBox.innerHTML = pending.map(t => `
             <div class="bg-white border rounded-lg p-3 shadow-sm flex justify-between items-center">
               <div class="space-y-0.5">
                 <span class="text-xs font-mono font-bold text-red-800">BIS: ${t.ticketId}</span>
@@ -710,20 +710,20 @@
       document.getElementById("attendBox").classList.add("hidden");
     }
 
-    // Photo Compression
+    // High-Efficiency Compression for Google Drive & Fast Upload
     function compressImage(file, callback) {
       const reader = new FileReader();
       reader.onload = function(e) {
         const img = new Image();
         img.onload = function() {
-          const maxWidth = 900;
+          const maxWidth = 800; // Optimal resolution (~80-120KB per photo)
           const scale = Math.min(1, maxWidth / img.width);
           const canvas = document.createElement("canvas");
           canvas.width = img.width * scale;
           canvas.height = img.height * scale;
           const ctx = canvas.getContext("2d");
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          callback(canvas.toDataURL("image/jpeg", 0.65));
+          callback(canvas.toDataURL("image/jpeg", 0.55));
         };
         img.src = e.target.result;
       };
@@ -759,7 +759,7 @@
 
       const btn = document.getElementById("resolveSubmitBtn");
       btn.disabled = true;
-      btn.innerText = "Saving & Generating Slip...";
+      btn.innerText = `Compressing & Saving ${workPhotos.length} Photos...`;
 
       const startTime = document.getElementById("workStartTimeInput").value.trim();
       const attendedBy = document.getElementById("attendedByInput").value.trim();
@@ -793,8 +793,8 @@
 
       btn.disabled = false;
       btn.innerText = "✓ Save & Generate Printable Slip";
-      cancelAttend();
-      fetchAllTasks();
+      
+      // Open slip BEFORE clearing workPhotos so WhatsApp can attach all clicked photos
       openPrintableSlip(completedObj);
     });
 
@@ -816,12 +816,16 @@
 
     function closeSlipModal() {
       document.getElementById("slipModal").classList.add("hidden");
+      cancelAttend();
+      fetchAllTasks();
     }
 
-    function shareWhatsAppSlip() {
+    // Attach ALL Clicked Photos to WhatsApp
+    async function shareWhatsAppSlip() {
+      const bisNo = document.getElementById("slipBisNo").value;
       const msg = `*🏛️ CGC UNIVERSITY MOHALI - MAINTENANCE SLIP*
 ━━━━━━━━━━━━━━━━━━━
-*BIS NO.:* ${document.getElementById("slipBisNo").value}
+*BIS NO.:* ${bisNo}
 *DATE:* ${document.getElementById("slipDate").value} | *DOMAIN:* ${document.getElementById("slipDomain").value}
 *MACHINE:* ${document.getElementById("slipMachine").value}
 *LOCATION:* ${document.getElementById("slipLocation").value}
@@ -833,6 +837,30 @@
 *ATTENDED BY:* ${document.getElementById("slipAttendedBy").value}
 *CLOSE DATE & TIME:* ${document.getElementById("slipCloseDateTime").value}
 ━━━━━━━━━━━━━━━━━━━`;
+
+      if (workPhotos && workPhotos.length > 0 && navigator.share && navigator.canShare) {
+        try {
+          const filesArray = [];
+          for (let i = 0; i < workPhotos.length; i++) {
+            const res = await fetch(workPhotos[i]);
+            const blob = await res.blob();
+            const file = new File([blob], `BIS_${bisNo}_Photo_${i + 1}.jpg`, { type: "image/jpeg" });
+            filesArray.push(file);
+          }
+
+          if (navigator.canShare({ files: filesArray })) {
+            await navigator.share({
+              title: `Maintenance Slip - BIS ${bisNo}`,
+              text: msg,
+              files: filesArray
+            });
+            return;
+          }
+        } catch (err) {
+          console.log("Multi-file share fallback:", err);
+        }
+      }
+
       window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
     }
   </script>
