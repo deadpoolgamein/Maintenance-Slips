@@ -48,6 +48,12 @@
       <div class="mt-2 inline-block bg-red-950/70 border border-red-700/80 rounded-full px-3 py-0.5">
         <p class="text-[11px] text-red-100 font-medium">System Lead: <span class="font-bold text-white">Sandeep Singh</span> (Emp Code: <span class="text-amber-300 font-mono font-bold">J-5383</span>)</p>
       </div>
+      <!-- 1-Click Chrome App Install Button -->
+      <div id="pwaInstallWrap" class="hidden mt-2">
+        <button type="button" onclick="installPWA()" class="bg-amber-400 hover:bg-amber-300 text-red-950 font-black text-xs px-3.5 py-1 rounded-full shadow-md flex items-center gap-1.5 mx-auto">
+          <span>📲 Install App on Phone / PC</span>
+        </button>
+      </div>
     </div>
 
     <!-- Main Navigation Tabs -->
@@ -1052,6 +1058,35 @@
       }
       window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
     }
+    // ================= PWA INSTALL & SERVICE WORKER =================
+    let deferredPrompt = null;
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch(err => console.log("SW error:", err));
+      });
+    }
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById("pwaInstallWrap").classList.remove("hidden");
+    });
+
+    async function installPWA() {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === "accepted") {
+        document.getElementById("pwaInstallWrap").classList.add("hidden");
+      }
+      deferredPrompt = null;
+    }
+
+    window.addEventListener("appinstalled", () => {
+      document.getElementById("pwaInstallWrap").classList.add("hidden");
+      deferredPrompt = null;
+    });
   </script>
 </body>
 </html>
